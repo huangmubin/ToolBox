@@ -17,9 +17,26 @@ public class Json: CustomStringConvertible {
     // MARK: - JSON Data
     
     /** The complete json data. */
-    public var json: Any?
+    private var json: Any?
     /** The temp json data when the user visiting. */
-    public var temp: Any?
+    private var temp: Any?
+    
+    /**
+     Set the json data.
+     
+     - parameter json: json Data
+     */
+    public func set(_ json: Any?) {
+        self.json = json
+        self.temp = json
+    }
+    
+    /**
+     Reset the temp data.
+     */
+    public func reset() {
+        self.temp = self.json
+    }
     
     // MARK: - Description: CustomStringConvertible
     
@@ -30,6 +47,10 @@ public class Json: CustomStringConvertible {
     /** description methods */
     public func log() {
         print(description)
+    }
+    /** description temp methods */
+    public func logTemp() {
+        print("==== Json Temp Data Start ====\n\(self.temp)\n==== Json Temp Data End ====")
     }
     
     // MARK: - Init Data Object
