@@ -443,6 +443,6 @@ extension JsonModelProtocol {
 // MARK: - Json Adapt Protocol
 
 public protocol JsonAdaptProtocol {
-    init(adapt json: Json)
+    init?(adapt json: Json)
 }
 
