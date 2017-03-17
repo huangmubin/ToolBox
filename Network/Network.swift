@@ -58,7 +58,7 @@ public class Network: NSObject {
     }()
     
     /** The feedback queue */
-    public var feedbackThread: OperationQueue?
+    public var feedbackThread: DispatchQueue?
     
     // MARK: Tasks Queue
     
@@ -370,13 +370,15 @@ extension Network: SessionDelegate {
         
         if let receive = self.tasks.current?.receiveResponse, let task = self.tasks.current {
             if let feedback = feedbackThread {
-                feedback.addOperation { [task = task, receive = receive] in
+                feedback.async { [task = task, receive = receive] in
                     self.logMessage(value: "\(task.id); didReceiveResponse code = \(task.code)")
                     receive(task)
                 }
             }
-            self.logMessage(value: "\(task.id); didReceiveResponse code = \(task.code)")
-            receive(task)
+            else {
+                self.logMessage(value: "\(task.id); didReceiveResponse code = \(task.code)")
+                receive(task)
+            }
         }
         else {
             self.logMessage(value: "\(dataTask.taskDescription); didReceiveResponse")
@@ -400,7 +402,7 @@ extension Network: SessionDelegate {
         // Feedback
         if let receive = task.receiceData {
             if let feedback = feedbackThread {
-                feedback.addOperation { [task = task, data = data, receive = receive] in
+                feedback.async { [task = task, data = data, receive = receive] in
                     receive(task, data)
                 }
             }
@@ -423,7 +425,7 @@ extension Network: SessionDelegate {
         if let receive = self.tasks.current?.receiveComplete,
             let task = self.tasks.current {
             if let feedback = feedbackThread {
-                feedback.addOperation { [task = task, error = error, receive = receive] in
+                feedback.async { [task = task, error = error, receive = receive] in
                     self.logMessage(value: "\(task.id); didCompleteWithError \(error);")
                     receive(task, error)
                 }
