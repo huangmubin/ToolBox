@@ -3,6 +3,8 @@ My Tool box.
 
 # Json.swift
 
+Json data analysis tool.
+
 ```
 // Json Object
 let data = {
@@ -28,6 +30,8 @@ let data = {
 }
 ```
 
+## Simple use
+
 ```
 // Simple use
 let json = Json(data: json_data)
@@ -36,6 +40,8 @@ json["int"].int                     // 100
 json["object", "string"].string     // myron_json_object
 json["array", 1, "string"].string   // myron_json_array_object1
 ```
+
+## Auto to Model
 
 ```
 // Auto to Model
@@ -67,8 +73,10 @@ model.object.string     // myron_json_object
 model.array[1].string   // myron_json_array_object1
 ```
 
+## Custom to Model
+
 ```
-// Custom to model
+// Custom to Model
 class Value: JsonAdaptProtocol {
     var string = ""
     request init?(adapt json: Json) {
@@ -106,3 +114,72 @@ model.int               // 100
 model.object.string     // myron_json_object
 model.array[1].string   // myron_json_array_object1
 ```
+
+# Network.swift
+
+A Network Tools. Use a queue to manage the network task.
+
+```
+import ~/Protocols/QueueProtocol.swift
+import ~/Network/SessionDelegate.swift
+```
+
+The log message is all prefix with "self.logMessage", you can annotation it.
+
+## Simple use
+
+```
+let network = Network(identifier: "Test")
+network.get(
+    url: "https://github.com/huangmubin/ToolBox/archive/master.zip",
+    receiveComplete: { (task, error) in
+        // ...
+    }
+)
+```
+
+## Specify feedback thread
+
+```
+let network = Network(identifier: "Test")
+network.feedbackThread = DispatchQueue.main
+network.get(
+    url: "https://github.com/huangmubin/ToolBox/archive/master.zip",
+    receiveComplete: { (task, error) in
+        // ... is in DispatchQueue.main
+    }
+)
+```
+
+# SessionDelegate.swift
+
+A delegate object to url session.
+
+# Extension
+
+## Extension_String.swift
+
+* localisation
+* SubString
+
+## Extension_UIColor.swift
+
+* Init
+
+# Protocols
+
+## QueueProtocol.swift
+
+An Array container, implement some stack and queue methods.
+
+### QueueProtocol
+
+normal stack and queu action.
+
+### QueueControlProtocol
+
+auto control the current data.
+
+### QueueControl
+
+a class implement QueueControlProtocol
