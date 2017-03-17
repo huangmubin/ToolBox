@@ -30,7 +30,6 @@ extension QueueProtocol {
     /**
      Push a data in queue.
      - parameter data: data
-     - returns:
      */
     mutating func push(_ data: QueueType) {
         datas.append(data)
@@ -50,6 +49,22 @@ extension QueueProtocol {
     }
     
     /**
+     Advance a element to the next.
+     - parameter where: the predicate to which data.
+     */
+    mutating func advanceToNext(where predicate: (QueueType) -> Bool) {
+        if let i = datas.index(where: predicate) {
+            let data = datas.remove(at: i)
+            if isSequence {
+                datas.insert(data, at: 0)
+            }
+            else {
+                datas.append(data)
+            }
+        }
+    }
+    
+    /**
      Find a data with predicate closures.
      - parameter where: the predicate to which data.
      - returns: the data or nil.
@@ -64,10 +79,20 @@ extension QueueProtocol {
     }
     
     /**
+     Find a data with predicate closures.
+     - parameter where: the predicate to which data.
+     - returns: the data or nil.
+     */
+    func contains(where predicate: (QueueType) -> Bool) -> Bool {
+        return datas.contains(where: predicate)
+    }
+    
+    /**
      Remove a data with predicate closures.
      - parameter where: the predicate to which data.
      - returns: the data or nil.
      */
+    @discardableResult
     mutating func remove(where predicate: (QueueType) -> Bool) -> QueueType? {
         if let i = datas.index(where: predicate) {
             return datas.remove(at: i)
@@ -120,6 +145,40 @@ extension QueueControlProtocol {
      */
     mutating func done() {
         current = nil
+    }
+    
+    /**
+     Find a data with predicate closures.
+     - parameter where: the predicate to which data.
+     - returns: the data or nil.
+     */
+    func find(where predicate: (QueueType) -> Bool) -> QueueType? {
+        if let data = self.current {
+            if predicate(data) {
+                return self.current
+            }
+        }
+        
+        if let i = datas.index(where: predicate) {
+            return datas[i]
+        }
+        else {
+            return nil
+        }
+    }
+    
+    /**
+     Find a data with predicate closures.
+     - parameter where: the predicate to which data.
+     - returns: the data or nil.
+     */
+    func contains(where predicate: (QueueType) -> Bool) -> Bool {
+        if let data = self.current {
+            if predicate(data) {
+                return true
+            }
+        }
+        return datas.contains(where: predicate)
     }
     
 }
