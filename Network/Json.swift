@@ -217,10 +217,11 @@ public class Json: CustomStringConvertible {
      Get the data with key.
      
      - parameter keys: some String or Int key. like [1, "key", 2]
+     - parameter null: if null.
      
-     - returns: the T type data, if nill return the type
+     - returns: the T type data, if nill return the null
      */
-    public func get<T>(_ keys: Any..., type: T) -> T {
+    public func get<T>(_ keys: Any..., null: T) -> T {
         defer { self.temp = self.json }
         var temp = self.temp
         for key in keys {
@@ -231,7 +232,7 @@ public class Json: CustomStringConvertible {
                 temp = json[key]
             }
         }
-        return (temp as? T) ?? type
+        return (temp as? T) ?? null
     }
     
     // MARK: - Class Tools
