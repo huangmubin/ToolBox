@@ -43,7 +43,7 @@ extension NotifierProtocol {
 
 extension Notification {
     
-    private func open_info(keys: Any...) -> Any? {
+    private func open_info(keys: [Any]) -> Any? {
         if let infos = userInfo {
             var temp: Any? = infos
             for key in keys {
