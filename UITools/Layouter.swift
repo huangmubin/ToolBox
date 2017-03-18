@@ -511,3 +511,127 @@ extension Layouter {
     }
     
 }
+
+
+/*
+// TODO: - Test Layouter Operations
+ 
+// MARK: - Layout Operations
+
+extension Layouter {
+    
+    /*
+     通过运算符来进行 Layout 设置。
+     */
+    class Operation {
+        weak var view: UIView!
+        var attribute: NSLayoutAttribute
+        
+        var constant: CGFloat = 0
+        var multiplier: CGFloat = 1
+        var priority: Float = 1000
+        
+        init(view: UIView, attribute: NSLayoutAttribute) {
+            self.view = view
+            self.attribute = attribute
+        }
+    }
+    
+}
+
+// MARK: - Layout Operations: == <= >=
+
+extension Layouter.Operation {
+    
+    static func ==(left: Layouter.Operation, right: Layouter.Operation) -> NSLayoutConstraint {
+        left.view.translatesAutoresizingMaskIntoConstraints = false
+        let layout = NSLayoutConstraint(item: left.view, attribute: left.attribute, relatedBy: .equal, toItem: right.view, attribute: right.attribute, multiplier: right.multiplier, constant: right.constant)
+        layout.priority = right.priority
+        return layout
+    }
+    
+    static func <=(left: Layouter.Operation, right: Layouter.Operation) -> NSLayoutConstraint {
+        left.view.translatesAutoresizingMaskIntoConstraints = false
+        let layout = NSLayoutConstraint(item: left.view, attribute: left.attribute, relatedBy: .lessThanOrEqual, toItem: right.view, attribute: right.attribute, multiplier: right.multiplier, constant: right.constant)
+        layout.priority = right.priority
+        return layout
+    }
+    
+    static func >=(left: Layouter.Operation, right: Layouter.Operation) -> NSLayoutConstraint {
+        left.view.translatesAutoresizingMaskIntoConstraints = false
+        let layout = NSLayoutConstraint(item: left.view, attribute: left.attribute, relatedBy: .greaterThanOrEqual, toItem: right.view, attribute: right.attribute, multiplier: right.multiplier, constant: right.constant)
+        layout.priority = right.priority
+        return layout
+    }
+    
+}
+
+// MARK: - Layout Operations: + - * / |
+
+extension Layouter.Operation {
+    
+    static func +(left: Layouter.Operation, right: CGFloat) -> Layouter.Operation {
+        left.constant = right
+        return left
+    }
+    
+    static func -(left: Layouter.Operation, right: CGFloat) -> Layouter.Operation {
+        left.constant = -right
+        return left
+    }
+    
+    static func *(left: Layouter.Operation, right: CGFloat) -> Layouter.Operation {
+        left.multiplier = right
+        return left
+    }
+    
+    static func /(left: Layouter.Operation, right: CGFloat) -> Layouter.Operation {
+        left.multiplier = 1/right
+        return left
+    }
+    
+    static func |(left: Layouter.Operation, right: Float) -> Layouter.Operation {
+        left.priority = right
+        return left
+    }
+    
+}
+
+// MARK: - Layout Operations Protocol
+
+extension UIView {
+    
+    var width: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .width)
+    }
+    
+    var height: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .height)
+    }
+    
+    var centerX: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .centerX)
+    }
+    
+    var centerY: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .centerY)
+    }
+    
+    var top: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .top)
+    }
+    
+    var bottom: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .bottom)
+    }
+    
+    var leading: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .leading)
+    }
+    
+    var trailing: Layouter.Operation {
+        return Layouter.Operation(view: self, attribute: .trailing)
+    }
+    
+}
+*/
