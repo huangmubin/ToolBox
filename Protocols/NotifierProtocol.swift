@@ -64,13 +64,28 @@ extension Notification {
     /**
      Get the data with key.
      - parameter keys: some String or Int key. like [1, "key", 2]
-     - returns: the T type data, if nill return the type
+     - parameter null: if nil
+     - returns: the T type data, if nill return the null
      */
-    public func get<T>(_ keys: Any..., type: T) -> T {
+    public func get<T>(_ keys: Any..., null: T) -> T {
         if let value = open_info(keys: keys) as? T {
             return value
         }
-        return type
+        return null
     }
+    
+    
+    /**
+     Get the data with key.
+     - parameter keys: some String or Int key. like [1, "key", 2]
+     - returns: the T type data, if nill return nil
+     */
+    public func get<T>(_ keys: Any...) -> T? {
+        if let value = open_info(keys: keys) as? T {
+            return value
+        }
+        return nil
+    }
+    
     
 }
