@@ -20,14 +20,17 @@ public class DiskManager {
     
     // MARK: - File Managers
     
+    @discardableResult
     public class func exist(file: String) -> Bool {
         return FileManager.default.fileExists(atPath: file)
     }
     
+    @discardableResult
     public class func read(file: String) -> Data? {
         return FileManager.default.contents(atPath: file)
     }
     
+    @discardableResult
     public class func create(directory: String) -> Bool {
         do {
             try FileManager.default.createDirectory(at: URL(fileURLWithPath: directory), withIntermediateDirectories: true, attributes: nil)
@@ -36,6 +39,7 @@ public class DiskManager {
         return false
     }
     
+    @discardableResult
     public class func save(data: Data, to: String) -> Bool {
         do {
             try data.write(to: URL(fileURLWithPath: to))
@@ -44,6 +48,7 @@ public class DiskManager {
         return false
     }
     
+    @discardableResult
     public class func delete(file: String) -> Bool {
         do {
             try FileManager.default.removeItem(atPath: file)
@@ -52,9 +57,19 @@ public class DiskManager {
         return false
     }
     
+    @discardableResult
     public class func copy(file: String, to: String) -> Bool {
         do {
-            if FileManager.default.fileExists(atPath: file) {
+            if FileManager.default.fileExists(atPath: file) && !FileManager.default.fileExists(atPath: to) {
+                var paths = to.components(separatedBy: "/")
+                if paths.count <= 1 {
+                    return false
+                }
+                paths.removeLast()
+                let directory = paths.joined(separator: "/")
+                if !FileManager.default.fileExists(atPath: directory) {
+                    try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true, attributes: nil)
+                }
                 try FileManager.default.copyItem(atPath: file, toPath: to)
                 return true
             }
@@ -62,9 +77,19 @@ public class DiskManager {
         return false
     }
     
+    @discardableResult
     public class func move(file: String, to: String) -> Bool {
         do {
-            if FileManager.default.fileExists(atPath: file) {
+            if FileManager.default.fileExists(atPath: file) && !FileManager.default.fileExists(atPath: to) {
+                var paths = to.components(separatedBy: "/")
+                if paths.count <= 1 {
+                    return false
+                }
+                paths.removeLast()
+                let directory = paths.joined(separator: "/")
+                if !FileManager.default.fileExists(atPath: directory) {
+                    try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true, attributes: nil)
+                }
                 try FileManager.default.moveItem(atPath: file, toPath: to)
                 return true
             }
@@ -72,6 +97,36 @@ public class DiskManager {
         return false
     }
 
+    // MARK: - File Attribute
+    
+    public class func isDirectory(path: String) -> Bool {
+        if let attribute = try? FileManager.default.attributesOfItem(atPath: path) {
+            if let type = attribute[FileAttributeKey.type] as? String {
+                return type == FileAttributeType.typeDirectory.rawValue
+            }
+        }
+        return false
+    }
+    
+    public class func size(path: String) -> Double {
+        if let attribute = try? FileManager.default.attributesOfItem(atPath: path) {
+            if let size = attribute[FileAttributeKey.size] as? Double {
+                return size
+            }
+        }
+        return 0
+    }
+
+    public class func typeAndSize(path: String) -> (Bool, Double) {
+        if let attribute = try? FileManager.default.attributesOfItem(atPath: path) {
+            if let type = attribute[FileAttributeKey.type] as? String,
+               let size = attribute[FileAttributeKey.size] as? Double {
+                return (type == FileAttributeType.typeDirectory.rawValue, size)
+            }
+        }
+        return (false, 0)
+    }
+    
 }
 
 // MARK: - Disk Manager extension: Path
@@ -81,25 +136,40 @@ extension DiskManager {
     public class Path {
         
         static let home: String = NSHomeDirectory()
-        
-        /// Documents 文件夹。iTunes 备份，程序中用到的文件数据。
         static let documents = "/Documents/"
-        /// Library/Preferences 文件夹。默认设置或状态信息。iTunes 备份。
         static let preferences = "/Library/Preferences/"
-        /// Library/Caches 文件夹。缓存文件，不会自动删除。
         static let caches = "/Library/Caches/"
-        /// tmp/ 文件夹。临时文件，系统可能删除其内容。
         static let tmp = "/tmp/"
         
+        /**
+         ~/Documents/<file>
+         - parameter file: file name or path
+         - returns: path
+         */
         class func documents(_ file: String) -> String {
             return home + Path.documents + file
         }
+        /**
+         ~/Library/Preferences/<file>
+         - parameter file: file name or path
+         - returns: path
+         */
         class func preferences(_ file: String) -> String {
             return home + Path.preferences + file
         }
+        /**
+         ~/Library/Caches/<file>
+         - parameter file: file name or path
+         - returns: path
+         */
         class func caches(_ file: String) -> String {
             return home + Path.caches + file
         }
+        /**
+         ~/tmp/<file>
+         - parameter file: file name or path
+         - returns: path
+         */
         class func tmp(_ file: String) -> String {
             return home + Path.tmp + file
         }
@@ -112,61 +182,79 @@ extension DiskManager {
 
 extension DiskManager {
     
-    enum Size: Double {
+    public enum Size: Double {
         
         case Bytes  = 1
         case KB     = 1000
         case MB     = 1000000
         case GB     = 1000000000
         
-        /// 判断路径，如果是文件夹则搜索底下所有文件的大小之和
-        subscript(path: String) -> Double? {
-            guard let attribute = try? FileManager.default.attributesOfItem(atPath: path) else { return nil }
-            guard let type = attribute[FileAttributeKey.type] as? String else { return nil }
-            if type == FileAttributeType.typeDirectory.rawValue {
-                var size: UInt = 0
-                guard let subPaths = FileManager.default.subpaths(atPath: path) else { return nil }
-                for sub in subPaths {
-                    let subPath = "\(path)\(path.hasSuffix("/") ? "" : "/")\(sub)"
-                    guard let subAtt = try? FileManager.default.attributesOfItem(atPath: subPath) else { continue }
-                    guard let type = subAtt[FileAttributeKey.type] as? String else { continue }
-                    if type != FileAttributeType.typeDirectory.rawValue {
-                        guard let s = subAtt[FileAttributeKey.size] as? UInt else { continue }
-                        size += s
-                    }
-                }
-                return Double(size) / rawValue
+        /**
+         folder or file's size to SizeType
+         */
+        public subscript(path: String, deep: Bool) -> Double {
+            let attribute = DiskManager.typeAndSize(path: path)
+            if attribute.0 {
+                return Size.directory(path: path, deep: deep) / rawValue
             } else {
-                guard let size = attribute[FileAttributeKey.size] as? UInt else { return nil }
-                return Double(size) / rawValue
+                return attribute.1 / rawValue
             }
         }
         
-        static func bytes(path: String) -> UInt {
-            guard let attribute = try? FileManager.default.attributesOfItem(atPath: path) else { return 0 }
-            guard let type = attribute[FileAttributeKey.type] as? String else { return 0 }
-            
-            if type == FileAttributeType.typeDirectory.rawValue {
-                var size: UInt = 0
-                guard let subPaths = FileManager.default.subpaths(atPath: path) else { return 0 }
-                
-                for sub in subPaths {
-                    let subPath = "\(path)\(path.hasSuffix("/") ? "" : "/")\(sub)"
-                    guard let subAtt = try? FileManager.default.attributesOfItem(atPath: subPath) else { continue }
-                    guard let type = subAtt[FileAttributeKey.type] as? String else { continue }
-                    
-                    if type != FileAttributeType.typeDirectory.rawValue {
-                        guard let s = subAtt[FileAttributeKey.size] as? UInt else { continue }
-                        size += s
-                    }
-                }
-                return size
-            } else {
-                guard let size = attribute[FileAttributeKey.size] as? UInt else { return 0 }
-                return size
+        /**
+         folder or file's size to SizeType
+         */
+        public subscript(path: String) -> Double {
+            return self[path, false]
+        }
+        
+        /**
+         size string use "%\(length)f Bytes" format
+         - parameter path: file name or path
+         - parameter length: size
+         - returns:
+         */
+        public func toString(_ path: String, length: Double) -> String {
+            switch self {
+            case .Bytes:
+                let format = "%\(length)f Bytes"
+                return String(format: format, self[path])
+            case .GB:
+                let format = "%\(length)f GB"
+                return String(format: format, self[path])
+            case .MB:
+                let format = "%\(length)f MB"
+                return String(format: format, self[path])
+            case .KB:
+                let format = "%\(length)f KB"
+                return String(format: format, self[path])
             }
         }
         
+        // MARK: - Tools
         
+        public static func directory(path: String, deep: Bool = false) -> Double {
+            if let subPaths = FileManager.default.subpaths(atPath: path) {
+                var iterator = subPaths.makeIterator()
+                var subFileName = iterator.next()
+                var subPath: String = ""
+                let pathPrefix = "\(path)\(path.hasSuffix("/") ? "" : "/")"
+                var totaleSize: Double = 0
+                while subFileName != nil {
+                    subPath = pathPrefix + subFileName!
+                    let attribute = DiskManager.typeAndSize(path: subPath)
+                    if attribute.0 {
+                        if deep {
+                            totaleSize += Size.directory(path: subPath, deep: deep)
+                        }
+                    } else {
+                        totaleSize += attribute.1
+                    }
+                    subFileName = iterator.next()
+                }
+                return totaleSize
+            }
+            return 0
+        }
     }
 }
