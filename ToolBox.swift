@@ -14,3 +14,23 @@ import UIKit
 func MyLog(file: String = #file, function: String = #function, line: Int = #line, _ text: Any?) {
     print("MyLog: \(file) - \(function) - \(line): \(text)")
 }
+
+
+// MARK: - ToolBox
+
+public class ToolBox {
+    
+    /**
+     count a random number in range
+     */
+    public class func random(range: Range<Int>) -> Int {
+        return  Int(arc4random_uniform(UInt32(range.count))) + range.lowerBound
+    }
+    
+    /**
+     count a random number in 0 ..< 1
+     */
+    public class func random() -> Double {
+        return Double(arc4random_uniform(UInt32.max)) / Double(UInt32.max)
+    }
+}
