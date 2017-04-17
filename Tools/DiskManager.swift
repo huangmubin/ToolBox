@@ -174,6 +174,17 @@ extension DiskManager {
             return home + Path.tmp + file
         }
         
+        /**
+         */
+        class func subFiles(_ path: String) -> [String] {
+            if let subPaths = FileManager.default.subpaths(atPath: path) {
+                return subPaths
+            }
+            else {
+                return []
+            }
+        }
+        
     }
     
 }

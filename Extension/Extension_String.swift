@@ -38,5 +38,7 @@ extension String {
         return self[self.index(self.startIndex, offsetBy: range.lowerBound) ..< self.index(self.startIndex, offsetBy: range.upperBound)]
     }
 
-    
+//    func sub(string: String, range: Range<Int>) -> String {
+//        return string[string.index(string.startIndex, offsetBy: range.lowerBound) ..< string.index(string.startIndex, offsetBy: range.upperBound)]
+//    }
 }

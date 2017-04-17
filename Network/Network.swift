@@ -25,7 +25,7 @@ public class Network: NSObject {
     public var identifier: String = ""
     
     public override var description: String {
-        return "Network \(identifier), task = \(tasks.current), waiting number = \(tasks.datas.count), first in first out is \(tasks.isSequence), feedbackThread = \(feedbackThread);"
+        return "Network \(identifier), task = \(String(describing: tasks.current)), waiting number = \(tasks.datas.count), first in first out is \(tasks.isSequence), feedbackThread = \(String(describing: feedbackThread));"
     }
     
     /** print the message or not */
@@ -103,7 +103,7 @@ public class Network: NSObject {
                     let dataTask = self.session?.dataTask(with: request)
                     dataTask?.taskDescription = self.tasks.current?.id
                     self.current = dataTask
-                    self.logMessage(value: "resume the \(self.tasks.current?.id); \(request.httpMethod) : \(request.url?.absoluteString); headers = \(request.allHTTPHeaderFields)")
+                    self.logMessage(value: "resume the \(String(describing: self.tasks.current?.id)); \(String(describing: request.httpMethod)) : \(String(describing: request.url?.absoluteString)); headers = \(String(describing: request.allHTTPHeaderFields))")
                     self.current?.resume()
                 }
                 else {
@@ -119,13 +119,13 @@ public class Network: NSObject {
     /** Suspend the current task */
     public func suspend() {
         self.current?.suspend()
-        self.logMessage(value: "suspend the \(self.current?.taskDescription)")
+        self.logMessage(value: "suspend the \(String(describing: self.current?.taskDescription))")
     }
     
     /** Resume the current task */
     public func resume() {
         self.current?.resume()
-        self.logMessage(value: "resume the \(self.current?.taskDescription)")
+        self.logMessage(value: "resume the \(String(describing: self.current?.taskDescription))")
     }
     
     /**
@@ -134,7 +134,7 @@ public class Network: NSObject {
      */
     public func cancel(id: String? = nil) {
         thread.addOperation {
-            self.logMessage(value: "cancel the \(id)")
+            self.logMessage(value: "cancel the \(String(describing: id))")
             guard let id = id else {
                 self.current?.cancel()
                 return
@@ -381,7 +381,7 @@ extension Network: SessionDelegate {
             }
         }
         else {
-            self.logMessage(value: "\(dataTask.taskDescription); didReceiveResponse")
+            self.logMessage(value: "\(String(describing: dataTask.taskDescription)); didReceiveResponse")
         }
     }
     
@@ -426,17 +426,17 @@ extension Network: SessionDelegate {
             let task = self.tasks.current {
             if let feedback = feedbackThread {
                 feedback.async { [task = task, error = error, receive = receive] in
-                    self.logMessage(value: "\(task.id); didCompleteWithError \(error);")
+                    self.logMessage(value: "\(task.id); didCompleteWithError \(String(describing: error));")
                     receive(task, error)
                 }
             }
             else {
-                self.logMessage(value: "\(task.id); didCompleteWithError \(error);")
+                self.logMessage(value: "\(task.id); didCompleteWithError \(String(describing: error));")
                 receive(task, error)
             }
         }
         else {
-            self.logMessage(value: "\(task.taskDescription); didCompleteWithError \(error);")
+            self.logMessage(value: "\(String(describing: task.taskDescription)); didCompleteWithError \(String(describing: error));")
         }
     }
     

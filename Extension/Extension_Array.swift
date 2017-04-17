@@ -61,7 +61,6 @@ public class ArrayTools {
                     array[index_sec].remove(at: index_row)
                 } else {
                     index_row += 1
-                    array.index(where: { _ in return true })
                 }
                 log_row += 1
             }
