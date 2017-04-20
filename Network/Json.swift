@@ -42,7 +42,7 @@ public class Json: CustomStringConvertible {
     
     /** description string */
     public var description: String {
-        return "==== Json Data Start ====\n\(self.json)\n==== Json Data End ===="
+        return "==== Json Data Start ====\n\(String(describing: self.json))\n==== Json Data End   ===="
     }
     /** description methods */
     public func log() {
@@ -50,7 +50,9 @@ public class Json: CustomStringConvertible {
     }
     /** description temp methods */
     public func logTemp() {
-        print("==== Json Temp Data Start ====\n\(self.temp)\n==== Json Temp Data End ====")
+        print("==== Json Temp Data Start ====")
+        print("\(String(describing: self.temp))")
+        print("==== Json Temp Data End   ====")
     }
     
     // MARK: - Init Data Object
