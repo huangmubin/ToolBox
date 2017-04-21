@@ -14,6 +14,9 @@ class Alert {
     
     let alert: UIAlertController
     
+    deinit {
+        print("Alert \(self) is deinit")
+    }
     
     // MARK: Init
     
@@ -53,18 +56,21 @@ class Alert {
     
     // MARK: Action
     
+    @discardableResult
     func action(title: String? = NSLocalizedString("Sure", comment: "Sure"), handler: ((UIAlertAction) -> Void)?) -> Alert {
         let action = UIAlertAction(title: title, style: .default, handler: handler)
         alert.addAction(action)
         return self
     }
     
+    @discardableResult
     func cancel(title: String? = NSLocalizedString("Cancel", comment: "Cancel"), handler: ((UIAlertAction) -> Void)?) -> Alert {
         let action = UIAlertAction(title: title, style: .cancel, handler: handler)
         alert.addAction(action)
         return self
     }
     
+    @discardableResult
     func destructive(title: String?, handler: ((UIAlertAction) -> Void)?) -> Alert {
         let action = UIAlertAction(title: title, style: .destructive, handler: handler)
         alert.addAction(action)
@@ -77,6 +83,7 @@ class Alert {
     var textFiledDidChanges: [UITextField: (UITextField) -> Void] = [:]
     var textFiledEndEditings: [UITextField: (UITextField) -> Void] = [:]
     
+    @discardableResult
     func textField(placeholder: String?, hanlder: ((UITextField) -> Void)?) -> Alert {
         alert.addTextField(configurationHandler: { (textField) in
             textField.placeholder = placeholder
@@ -88,18 +95,23 @@ class Alert {
         return self
     }
     
+    @discardableResult
     func beginEditing(_ hanlder: @escaping (UITextField) -> Void) -> Alert {
         if let text = alert.textFields?.last {
             textFiledBeginEditings[text] = hanlder
         }
         return self
     }
+    
+    @discardableResult
     func changed(_ hanlder: @escaping (UITextField) -> Void) -> Alert {
         if let text = alert.textFields?.last {
             textFiledDidChanges[text] = hanlder
         }
         return self
     }
+    
+    @discardableResult
     func endEditing(_ hanlder: @escaping (UITextField) -> Void) -> Alert {
         if let text = alert.textFields?.last {
             textFiledEndEditings[text] = hanlder
@@ -107,6 +119,7 @@ class Alert {
         return self
     }
     
+    @discardableResult
     func clear() {
         textFiledBeginEditings.removeAll()
         textFiledDidChanges.removeAll()
