@@ -13,14 +13,19 @@ import UIKit
 enum HintBarType {
     case text
     case loading
+    case image
 }
 
-fileprivate protocol HintViewTextBarProtocol {
+protocol HintViewTextBarProtocol {
     var label: UILabel { get set }
 }
 
-fileprivate protocol HintViewColorBarProtocol {
+protocol HintViewColorBarProtocol {
     var colors: [UIColor] { get set }
+}
+
+protocol HintViewImageBarProtocol {
+    var imageView: UIImageView { get set }
 }
 
 public class HintBar {
@@ -34,6 +39,8 @@ public class HintBar {
             bar = HintStatusTextBar(height: 20, time: 3)
         case .loading:
             bar = HintStatusLoadingBar(height: 20, time: 0)
+        case .image:
+            bar = HintStatusImageBar(height: 20, time: 3)
         }
     }
     
@@ -96,6 +103,7 @@ public class HintBar {
             if let bar = bar as? HintViewTextBarProtocol {
                 bar.label.text = value
             }
+        default: break
         }
         return self
     }
@@ -106,6 +114,7 @@ public class HintBar {
             if let bar = bar as? HintViewTextBarProtocol {
                 bar.label.textColor = value
             }
+        default: break
         }
         return self
     }
@@ -116,6 +125,43 @@ public class HintBar {
             if let bar = bar as? HintViewTextBarProtocol {
                 bar.label.font = value
             }
+        default: break
+        }
+        return self
+    }
+    
+    // MARK: Image View
+    
+    func image(_ value: UIImage?) -> HintBar {
+        switch type {
+        case .image:
+            if let bar = bar as? HintViewImageBarProtocol {
+                bar.imageView.image = value
+            }
+        default: break
+        }
+        return self
+    }
+    
+    func images(_ value: [UIImage]) -> HintBar {
+        switch type {
+        case .image:
+            if let bar = bar as? HintViewImageBarProtocol {
+                bar.imageView.animationImages = value
+                bar.imageView.startAnimating()
+            }
+        default: break
+        }
+        return self
+    }
+    
+    func imageView(_ value: (UIImageView) -> Void) -> HintBar {
+        switch type {
+        case .image:
+            if let bar = bar as? HintViewImageBarProtocol {
+                value(bar.imageView)
+            }
+        default: break
         }
         return self
     }
@@ -517,4 +563,27 @@ public class HintStatusLoadingBar: HintStatusTextBar, HintViewColorBarProtocol {
         })
         loadingTimer.resume()
     }
+}
+
+// MARK: - Hint Status Image Bar
+
+
+public class HintStatusImageBar: HintStatusBar, HintViewImageBarProtocol {
+    
+    var imageView: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = UIViewContentMode.scaleAspectFit
+        view.animationDuration = 3
+        return view
+    }()
+    
+    override func deploy() {
+        super.deploy()
+        addSubview(imageView)
+    }
+    
+    override func updateContainer() {
+        imageView.frame = self.bounds
+    }
+    
 }
