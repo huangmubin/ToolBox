@@ -22,18 +22,52 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
-                    <navigationItem key="navigationItem" id="udq-FV-ejk"/>
+                    <navigationItem key="navigationItem" id="udq-FV-ejk">
+                        <barButtonItem key="rightBarButtonItem" title="Show New Controller" id="HD0-Ss-Aym">
+                            <connections>
+                                <segue destination="50G-av-RNC" kind="show" id="CM9-EK-fXa"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1076" y="125.4872563718141"/>
+            <point key="canvasLocation" x="814" y="779"/>
+        </scene>
+        <!--New View Controller-->
+        <scene sceneID="9c4-Mi-kNc">
+            <objects>
+                <viewController id="50G-av-RNC" customClass="NewViewController" customModule="ToolBoxProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zUV-nq-2el"/>
+                        <viewControllerLayoutGuide type="bottom" id="nyZ-Le-liE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="iH1-cC-AeD">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="otl-qk-T4z">
+                                <rect key="frame" x="164" y="318" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="otl-qk-T4z" firstAttribute="centerX" secondItem="iH1-cC-AeD" secondAttribute="centerX" id="CWd-b5-egC"/>
+                            <constraint firstItem="otl-qk-T4z" firstAttribute="centerY" secondItem="iH1-cC-AeD" secondAttribute="centerY" id="cYl-Yl-Kec"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ESj-bH-jzG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1626" y="779"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="0vM-eT-RIg">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Xws-Uu-FOs" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" barStyle="black" id="J6w-O0-LDF">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="J6w-O0-LDF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

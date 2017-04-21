@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9CB9C1B01EA9A09B00AE943B /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB9C1AF1EA9A09B00AE943B /* NewViewController.swift */; };
 		9CFF82A01EA841D400D2D3DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFF829F1EA841D400D2D3DA /* AppDelegate.swift */; };
 		9CFF82A21EA841D400D2D3DA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFF82A11EA841D400D2D3DA /* ViewController.swift */; };
 		9CFF82A51EA841D400D2D3DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9CFF82A31EA841D400D2D3DA /* Main.storyboard */; };
@@ -56,6 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9CB9C1AF1EA9A09B00AE943B /* NewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
 		9CFF829C1EA841D400D2D3DA /* ToolBoxProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToolBoxProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CFF829F1EA841D400D2D3DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9CFF82A11EA841D400D2D3DA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 			children = (
 				9CFF829F1EA841D400D2D3DA /* AppDelegate.swift */,
 				9CFF82A11EA841D400D2D3DA /* ViewController.swift */,
+				9CB9C1AF1EA9A09B00AE943B /* NewViewController.swift */,
 				9CFF82A31EA841D400D2D3DA /* Main.storyboard */,
 				9CFF82A91EA841D400D2D3DA /* Assets.xcassets */,
 				9CFF82AB1EA841D400D2D3DA /* LaunchScreen.storyboard */,
@@ -231,11 +234,11 @@
 		9CFF82E41EA8425800D2D3DA /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
-				9CFF82E51EA8425800D2D3DA /* Alert.swift */,
 				9CFF82E61EA8425800D2D3DA /* Button.swift */,
 				9CFF82E81EA8425800D2D3DA /* ImageView.swift */,
 				9CFF82E91EA8425800D2D3DA /* TableView.swift */,
 				9CFF82EA1EA8425800D2D3DA /* View.swift */,
+				9CFF82E51EA8425800D2D3DA /* Alert.swift */,
 				9CFF82E71EA8425800D2D3DA /* HintView.swift */,
 				9CFF83061EA844D200D2D3DA /* HintStatusBar.swift */,
 			);
@@ -397,6 +400,7 @@
 				9CFF82F31EA8425800D2D3DA /* Json.swift in Sources */,
 				9CFF82A21EA841D400D2D3DA /* ViewController.swift in Sources */,
 				9CFF82F61EA8425800D2D3DA /* SessionDelegate.swift in Sources */,
+				9CB9C1B01EA9A09B00AE943B /* NewViewController.swift in Sources */,
 				9CFF83001EA8425900D2D3DA /* HintView.swift in Sources */,
 				9CFF82FF1EA8425900D2D3DA /* Button.swift in Sources */,
 				9CFF82FA1EA8425900D2D3DA /* QueueProtocol.swift in Sources */,
