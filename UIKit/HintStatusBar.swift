@@ -468,7 +468,11 @@ public class HintStatusTextBar: HintStatusBar, HintViewTextBarProtocol {
     var label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightSemibold)
+        if #available(iOS 8.2, *) {
+            label.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightSemibold)
+        } else {
+            label.font = UIFont.boldSystemFont(ofSize: 12)
+        }
         return label
     }()
     

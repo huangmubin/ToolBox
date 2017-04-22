@@ -12,6 +12,15 @@ import UIKit
 
 class View: UIView {
 
+    // MARK: Layer
+    
+    @IBInspectable
+    var corner: CGFloat = 0 {
+        didSet {
+            layer.cornerRadius = corner
+        }
+    }
+    
     // MARK: Shadow
     
     @IBInspectable

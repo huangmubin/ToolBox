@@ -94,6 +94,21 @@ void socket_isblock(int socket, int on) {
     }
 }
 
+// MARK: - 关闭
+
+// @_silgen_name("socket_close") private func c_socket_close(socket: Int32) -> Int32
+/** 关闭 socket 连接 */
+int socket_close(int socket) {
+    return close(socket);
+}
+
+// @_silgen_name("socket_shutdown") private func c_socket_shutdown(socket: Int32, howto: Int32) -> Int32
+/** 断开连接 */
+int socket_shutdown(int socket, int howto) {
+    return shutdown(socket, howto);
+}
+
+
 // MARK: - TCP
 
 // @_silgen_name("socket_tcp_new_server") private func c_socket_tcp_create_server(port: Int32, listens: Int32) -> Int32

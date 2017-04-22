@@ -119,7 +119,7 @@ class Alert {
         return self
     }
     
-    @discardableResult
+    
     func clear() {
         textFiledBeginEditings.removeAll()
         textFiledDidChanges.removeAll()
