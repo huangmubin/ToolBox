@@ -508,7 +508,7 @@ size_t socket_recvfrom_t(int socket, void * buffer, size_t size, char * fromAddr
     }
     
     struct sockaddr_in address;
-    socklen_t port;
+    socklen_t port = sizeof(struct sockaddr);
     size_t r_size = recvfrom(socket, buffer, size, 0, (struct sockaddr *)&address, &port);
     if (r_size == -1) {
         perror("read error");
