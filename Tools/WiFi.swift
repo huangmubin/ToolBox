@@ -10,9 +10,9 @@ class WiFi {
             for cfa in cfas {
                 if let dict = CFBridgingRetain(
                     CNCopyCurrentNetworkInfo(cfa as! CFString)
-                    ) {
+                    ) as? NSDictionary {
                     if let ssid = dict["SSID"] as? String,
-                    let mac = dict["BSSID"] as? String {
+                        let mac = dict["BSSID"] as? String {
                         return (ssid, mac)
                     }
                 }
@@ -20,7 +20,7 @@ class WiFi {
         }
         return ("Unknow", "Unknow")
     }
-
+    
     /**
      获取 WiFi 名称。
      */
@@ -29,7 +29,7 @@ class WiFi {
             for cfa in cfas {
                 if let dict = CFBridgingRetain(
                     CNCopyCurrentNetworkInfo(cfa as! CFString)
-                    ) {
+                    ) as? NSDictionary {
                     if let ssid = dict["SSID"] as? String {
                         return ssid
                     }
@@ -38,8 +38,8 @@ class WiFi {
         }
         return nil
     }
-
-
+    
+    
     /**
      获取 Mac 信息。
      */
@@ -48,14 +48,14 @@ class WiFi {
             for cfa in cfas {
                 if let dict = CFBridgingRetain(
                     CNCopyCurrentNetworkInfo(cfa as! CFString)
-                    ) {
+                    ) as? NSDictionary {
                     if let mac = dict["BSSID"] as? String {
-                        return ssid, mac
+                        return mac
                     }
                 }
             }
         }
         return nil
     }
-
+    
 }
