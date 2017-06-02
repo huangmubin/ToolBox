@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension String {
     
@@ -37,8 +38,35 @@ extension String {
     subscript(range: Range<Int>) -> String {
         return self[self.index(self.startIndex, offsetBy: range.lowerBound) ..< self.index(self.startIndex, offsetBy: range.upperBound)]
     }
-
-//    func sub(string: String, range: Range<Int>) -> String {
-//        return string[string.index(string.startIndex, offsetBy: range.lowerBound) ..< string.index(string.startIndex, offsetBy: range.upperBound)]
-//    }
+    
+    // MARK: - Size
+    
+    static let string_size_label: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    /**
+     Return string size with font
+     - parameter width: string width
+     - parameter font: the font or nil is default
+     - returns: size
+     */
+    public func size(_ width: CGFloat, font: UIFont? = nil) -> CGSize {
+        let default_font = String.string_size_label.font
+        if let font = font {
+            String.string_size_label.font = font
+        }
+        String.string_size_label.frame = CGRect(
+            x: 0, y: 0,
+            width: width,
+            height: 100000
+        )
+        String.string_size_label.text = self
+        String.string_size_label.sizeToFit()
+        let size = String.string_size_label.frame.size
+        String.string_size_label.font = default_font
+        return size
+    }
 }
