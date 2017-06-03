@@ -13,6 +13,12 @@ import UIKit
 @objc protocol SetsTableViewDelegate {
     
     @objc optional func setsTableView(tableView: SetsTableView, cell: SetsTableViewCell, loadAtIndex index: IndexPath, item: SetsTableViewItem)
+    @objc optional func setsTableView(tableView: SetsTableView, cell: SetsTableViewCell, displayAtIndex index: IndexPath, item: SetsTableViewItem)
+    
+    @objc optional func setsTableView(tableView: SetsTableView, header: UITableViewHeaderFooterView?, loadAtSection section: Int)
+    @objc optional func setsTableView(tableView: SetsTableView, header: UIView?, displayAtSection section: Int)
+    @objc optional func setsTableView(tableView: SetsTableView, heightAtSection section: Int) -> CGFloat
+    @objc optional func setsTableView(tableView: SetsTableView, headerTitleAtSection section: Int) -> String?
     
     @objc optional func setsTableView(cell: SetsTableViewCell, actionAtIndex index: IndexPath, value: Any)
     
@@ -25,6 +31,9 @@ import UIKit
     var identifier: String { get set }
     var height_row: CGFloat { get set }
     var title: String { get set }
+    
+    var value: Any? { get set }
+    var temp: Any? { get set }
 }
 
 @objc protocol SetsTableViewItem_Image {
@@ -32,11 +41,11 @@ import UIKit
 }
 
 protocol SetsTableViewItem_Switch: SetsTableViewItem, SetsTableViewItem_Image {
-    var switch_value: Bool? { get set }
+    //var switch_value: Bool? { get set }
 }
 
 protocol SetsTableViewItem_List: SetsTableViewItem, SetsTableViewItem_Image {
-    var select_value: String? { get set }
+    //var select_value: String? { get set }
     var select_lists: [String] { get set }
     var detail_image: UIImage? { get set }
 }
@@ -46,6 +55,9 @@ class SetsTableViewItemModel: SetsTableViewItem {
     var identifier: String = "SetsTableViewCell_Info"
     var height_row: CGFloat = 44
     var title: String = "SetsTableViewCell"
+    
+    var value: Any?
+    var temp: Any?
     
     init() {
         
@@ -59,6 +71,12 @@ class SetsTableViewItemModel: SetsTableViewItem {
         }
         if let value = dictionary["title"] as? String {
             self.title = value
+        }
+        if let value = dictionary["value"] {
+            self.value = value
+        }
+        if let value = dictionary["temp"] {
+            self.temp = value
         }
     }
     
@@ -101,7 +119,7 @@ class SetsTableViewItemModel: SetsTableViewItem {
 class SetsTableViewItemModel_Switch: SetsTableViewItemModel, SetsTableViewItem_Switch {
     
     var image: UIImage?
-    var switch_value: Bool?
+    //    var switch_value: Bool?
     
     override init() {
         super.init()
@@ -111,16 +129,16 @@ class SetsTableViewItemModel_Switch: SetsTableViewItemModel, SetsTableViewItem_S
         if let value = dictionary["image"] as? String {
             self.image = UIImage(named: value)
         }
-        if let value = dictionary["switch_value"] as? Bool {
-            self.switch_value = value
-        }
+        //        if let value = dictionary["switch_value"] as? Bool {
+        //            self.switch_value = value
+        //        }
     }
 }
 
 class SetsTableViewItemModel_List: SetsTableViewItemModel, SetsTableViewItem_List {
     
     var image: UIImage?
-    var select_value: String?
+    //    var select_value: String?
     var select_lists: [String] = []
     var detail_image: UIImage?
     
@@ -132,9 +150,9 @@ class SetsTableViewItemModel_List: SetsTableViewItemModel, SetsTableViewItem_Lis
         if let value = dictionary["image"] as? String {
             self.image = UIImage(named: value)
         }
-        if let value = dictionary["select_value"] as? String {
-            self.select_value = value
-        }
+        //        if let value = dictionary["select_value"] as? String {
+        //            self.select_value = value
+        //        }
         if let value = dictionary["select_lists"] as? [String] {
             self.select_lists = value
         }
@@ -176,6 +194,10 @@ class SetsTableViewCell: UITableViewCell {
         self.index = index
     }
     
+    // MARK: Layout
+    
+    var layout_title_leading: NSLayoutConstraint?
+    
 }
 
 // MARK: Switch
@@ -185,7 +207,7 @@ class SetsTableViewCell_Switch: SetsTableViewCell {
     var item_image: UIImageView = UIImageView()
     var item_title: UILabel = UILabel()
     var item_switch: UISwitch = UISwitch()
-    var layout_title_leading: NSLayoutConstraint?
+    var layout_switch_trailing: NSLayoutConstraint?
     
     func switch_action(_ sender: UISwitch) {
         delegate?.setsTableView?(
@@ -289,18 +311,37 @@ class SetsTableViewCell_Switch: SetsTableViewCell {
                 toItem: self,
                 attribute: .trailing,
                 multiplier: 1,
-                constant: -8
+                constant: -30
             )
+            layout_switch_trailing = trailing
             addConstraints([center, trailing])
         }()
     }
     
     override func update(item: SetsTableViewItem, index: IndexPath) {
         super.update(item: item, index: index)
-        item_title.text = item.title
+        item_title.text = NSLocalizedString(item.title, comment: "")
         if let switch_item = item as? SetsTableViewItem_Switch {
             item_image.image = switch_item.image
-            if let value = switch_item.switch_value {
+            var on: Bool?
+            if let value = switch_item.value as? String {
+                switch value.lowercased() {
+                case "ok", "on", "yes", "true", "1":
+                    on = true
+                case "off", "no", "false", "0":
+                    on = false
+                default:
+                    break
+                }
+            }
+            if let value = switch_item.value as? Bool {
+                on = value
+            }
+            if let value = switch_item.value as? Int {
+                on = value == 1
+            }
+            
+            if let value = on {
                 item_switch.isEnabled = true
                 item_switch.isOn = value
             }
@@ -320,7 +361,6 @@ class SetsTableViewCell_List: SetsTableViewCell {
     var item_title: UILabel = UILabel()
     var item_value: UILabel = UILabel()
     var item_detail_image: UIImageView = UIImageView()
-    var layout_title_leading: NSLayoutConstraint?
     
     override func deploy() {
         super.deploy()
@@ -462,11 +502,18 @@ class SetsTableViewCell_List: SetsTableViewCell {
     
     override func update(item: SetsTableViewItem, index: IndexPath) {
         super.update(item: item, index: index)
-        item_title.text = item.title
+        item_title.text = NSLocalizedString(item.title, comment: "")
         if let list_item = item as? SetsTableViewItem_List {
             item_image.image = list_item.image
-            item_value.text = list_item.select_value
             item_detail_image.image = list_item.detail_image
+            if let value = list_item.value as? String {
+                item_value.text = NSLocalizedString(value, comment: "")
+                item_value.textColor = UIColor.black
+            }
+            else {
+                item_value.text = NSLocalizedString("---", comment: "")
+                item_value.textColor = UIColor.lightGray
+            }
         }
         else {
             item_image.image = nil
@@ -488,6 +535,7 @@ class SetsTableViewCell_Slider: SetsTableViewCell_List {
 class SetsTableViewCell_Action: SetsTableViewCell {
     
     var item_button: UIButton = UIButton(type: UIButtonType.system)
+    var layout_button_space: NSLayoutConstraint?
     
     override func deploy() {
         super.deploy()
@@ -521,6 +569,15 @@ class SetsTableViewCell_Action: SetsTableViewCell {
                 multiplier: 1,
                 constant: -8
             )
+            let centerX = NSLayoutConstraint(
+                item: item_button,
+                attribute: .centerX,
+                relatedBy: .equal,
+                toItem: self,
+                attribute: .centerX,
+                multiplier: 1,
+                constant: 0
+            )
             let leading = NSLayoutConstraint(
                 item: item_button,
                 attribute: .leading,
@@ -530,22 +587,19 @@ class SetsTableViewCell_Action: SetsTableViewCell {
                 multiplier: 1,
                 constant: 20
             )
-            let trailing = NSLayoutConstraint(
-                item: item_button,
-                attribute: .trailing,
-                relatedBy: .equal,
-                toItem: self,
-                attribute: .trailing,
-                multiplier: 1,
-                constant: -20
-            )
-            addConstraints([top, bottom, leading, trailing])
+            layout_button_space = leading
+            addConstraints([top, bottom, leading, centerX])
         }()
     }
     
     override func update(item: SetsTableViewItem, index: IndexPath) {
         super.update(item: item, index: index)
-        item_button.setTitle(item.title, for: .normal)
+        item_button.setTitle(
+            NSLocalizedString(item.title, comment: ""),
+            for: .normal
+        )
+        item_button.setTitleColor(tableview!.button_color, for: .normal)
+        item_button.layer.borderColor = tableview!.button_color!.cgColor
     }
     
     func button_action(_ sender: UIButton) {
@@ -608,7 +662,12 @@ class SetsTableViewCell_Info: SetsTableViewCell {
     
     override func update(item: SetsTableViewItem, index: IndexPath) {
         super.update(item: item, index: index)
-        item_label.text = item.title
+        if let info = item.value as? String {
+            item_label.text = NSLocalizedString(item.title, comment: "") + " : " + NSLocalizedString(info, comment: "")
+        }
+        else {
+            item_label.text = NSLocalizedString(item.title, comment: "")
+        }
     }
     
 }
@@ -639,6 +698,11 @@ class SetsTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         dataSource = self
         delegate = self
         register(
+            UITableViewHeaderFooterView.self,
+            forHeaderFooterViewReuseIdentifier: "UITableViewHeaderFooterView"
+        )
+        
+        register(
             SetsTableViewCell_Switch.self,
             forCellReuseIdentifier: "SetsTableViewCell_Switch"
         )
@@ -664,6 +728,19 @@ class SetsTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     
     var items: [[SetsTableViewItem]] = []
     weak var cell_delegate: SetsTableViewDelegate?
+    @IBInspectable
+    var button_color: UIColor? = UIColor(
+        red: 71.0/255.0,
+        green: 156.0/255.0,
+        blue: 1,
+        alpha: 1
+    )
+    @IBInspectable
+    var header_height: CGFloat = 30
+    
+    func items(index: IndexPath) -> SetsTableViewItem {
+        return items[index.section][index.row]
+    }
     
     // MARK: - UITableViewDateSource
     
@@ -693,11 +770,44 @@ class SetsTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = tableView.dequeueReusableHeaderFooterView(
+            withIdentifier: "UITableViewHeaderFooterView"
+        )
+        cell_delegate?.setsTableView?(
+            tableView: self,
+            header: view,
+            loadAtSection: section
+        )
+        return view
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return cell_delegate?.setsTableView?(
+            tableView: self,
+            headerTitleAtSection: section
+        )
+    }
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let item = items[indexPath.section][indexPath.row]
         (cell as! SetsTableViewCell).update(
             item: item,
             index: indexPath
+        )
+        cell_delegate?.setsTableView?(
+            tableView: self,
+            cell: cell as! SetsTableViewCell,
+            displayAtIndex: indexPath,
+            item: item
+        )
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        cell_delegate?.setsTableView?(
+            tableView: self,
+            header: view,
+            displayAtSection: section
         )
     }
     
@@ -705,18 +815,32 @@ class SetsTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         return items[indexPath.section][indexPath.row].height_row
     }
     
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return cell_delegate?.setsTableView?(
+            tableView: self,
+            heightAtSection: section
+            ) ?? header_height
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.section][indexPath.row]
+        if item.value == nil && item.identifier != "SetsTableViewCell_Action" {
+            return
+        }
+        
         let cell = tableView.cellForRow(at: indexPath) as! SetsTableViewCell
         switch item.identifier {
-        case "SetsTableViewCellSwitch":
+        case "SetsTableViewCell_Switch":
             break
-        case "SetsTableViewCellList":
+        case "SetsTableViewCell_List":
             let modal = ModalView.table(item.title)
             modal.index = -1
             if let list_item = item as? SetsTableViewItem_List {
-                if let index = list_item.select_lists.index(where: { $0 == list_item.select_value }) {
-                    modal.datas(list_item.select_lists).index(index)
+                modal.datas(list_item.select_lists)
+                if let value = list_item.value as? String {
+                    if let index = list_item.select_lists.index(where: { $0 == value }) {
+                        modal.index(index)
+                    }
                 }
             }
             modal.action({ [weak self] (view, value) in
@@ -726,13 +850,15 @@ class SetsTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                     value: value!
                 )
             }).display(inView: self)
-        case "SetsTableViewCellSlider":
+        case "SetsTableViewCell_Slider":
             let modal = ModalView.slider(item.title)
             modal.index = -1
             if let list_item = item as? SetsTableViewItem_List {
                 modal.datas(list_item.select_lists)
-                if let index = list_item.select_lists.index(where: { $0 == list_item.select_value }) {
-                    modal.index(index)
+                if let value = list_item.value as? String {
+                    if let index = list_item.select_lists.index(where: { $0 == value }) {
+                        modal.index(index)
+                    }
                 }
             }
             modal.action({ [weak self] (view, value) in
@@ -742,7 +868,7 @@ class SetsTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                     value: value!
                 )
             }).display(inView: self)
-        case "SetsTableViewCellAction":
+        case "SetsTableViewCell_Action":
             let modal = ModalView()
             modal.title_label.text = item.title
             modal.value = item
@@ -754,7 +880,7 @@ class SetsTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                 )
             }
             modal.display(inView: self)
-        case "SetsTableViewCellInfo":
+        case "SetsTableViewCell_Info":
             self.cell_delegate?.setsTableView?(
                 cell: cell,
                 actionAtIndex: indexPath,
