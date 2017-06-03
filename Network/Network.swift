@@ -97,7 +97,7 @@ public class Network: NSObject {
      */
     fileprivate func loop() {
         thread.addOperation {
-            self.logMessage(value: "loop")
+            self.logMessage(value: "loop next; tasks = \(self.tasks.datas.count); current = \(String(describing: self.tasks.current?.id));")
             if self.tasks.next() {
                 if let request = self.tasks.current?.request {
                     let dataTask = self.session?.dataTask(with: request)
@@ -240,8 +240,22 @@ public class Network: NSObject {
             task.receiceData = receiceData
             task.receiveComplete = receiveComplete
             
-            self.tasks.push(task)
-            self.logMessage(value: "create task success \(id)")
+            if task.request == nil {
+                if let feedback = self.feedbackThread {
+                    feedback.async {
+                        self.logMessage(value: "create task error \(id); (request error) url = \(url); method = \(method); body = \(String(describing: body)); timeout = \(String(describing: timeout));")
+                        task.receiveComplete?(task, NSError(domain: id, code: 0, userInfo: ["url": url, "method": method, "body": String(describing: body), "timeout":String(describing: timeout)]) as Error)
+                    }
+                }
+                else {
+                    self.logMessage(value: "create task error \(id); (request error) url = \(url); method = \(method); body = \(String(describing: body)); timeout = \(String(describing: timeout));")
+                    task.receiveComplete?(task, NSError(domain: id, code: 0, userInfo: ["url": url, "method": method, "body": String(describing: body), "timeout":String(describing: timeout)]) as Error)
+                }
+            }
+            else {
+                self.tasks.push(task)
+                self.logMessage(value: "create task success \(id)")
+            }
         }
     }
     
@@ -371,17 +385,17 @@ extension Network: SessionDelegate {
         if let receive = self.tasks.current?.receiveResponse, let task = self.tasks.current {
             if let feedback = feedbackThread {
                 feedback.async { [task = task, receive = receive] in
-                    self.logMessage(value: "\(task.id); didReceiveResponse code = \(task.code)")
+                    self.logMessage(value: "didReceiveResponse - \(task.id); code = \(task.code)")
                     receive(task)
                 }
             }
             else {
-                self.logMessage(value: "\(task.id); didReceiveResponse code = \(task.code)")
+                self.logMessage(value: "didReceiveResponse - \(task.id); code = \(task.code)")
                 receive(task)
             }
         }
         else {
-            self.logMessage(value: "\(String(describing: dataTask.taskDescription)); didReceiveResponse")
+            self.logMessage(value: "didReceiveResponse - \(String(describing: dataTask.taskDescription));")
         }
     }
     
@@ -426,17 +440,17 @@ extension Network: SessionDelegate {
             let task = self.tasks.current {
             if let feedback = feedbackThread {
                 feedback.async { [task = task, error = error, receive = receive] in
-                    self.logMessage(value: "\(task.id); didCompleteWithError \(String(describing: error));")
+                    self.logMessage(value: "didCompleteWithError - \(task.id); error = \(String(describing: error));")
                     receive(task, error)
                 }
             }
             else {
-                self.logMessage(value: "\(task.id); didCompleteWithError \(String(describing: error));")
+                self.logMessage(value: "didCompleteWithError - \(task.id); error = \(String(describing: error));")
                 receive(task, error)
             }
         }
         else {
-            self.logMessage(value: "\(String(describing: task.taskDescription)); didCompleteWithError \(String(describing: error));")
+            self.logMessage(value: "didCompleteWithError - \(String(describing: task.taskDescription)); error = \(String(describing: error));")
         }
     }
     
@@ -523,10 +537,10 @@ extension Network {
         public var receiveComplete: ((Network.Task, Error?) -> Void)?
         
         init() {
-            print("Network task\(self) init")
+            print("Network task \(self) init")
         }
         deinit {
-            print("Network task\(self) deinit")
+            print("Network task \(self) deinit\n")
         }
         
     }
