@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C429FF21EF67D3F0031E65C /* Extension_View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C429FF11EF67D3F0031E65C /* Extension_View.swift */; };
 		9CB9C1B01EA9A09B00AE943B /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB9C1AF1EA9A09B00AE943B /* NewViewController.swift */; };
 		9CFF82A01EA841D400D2D3DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFF829F1EA841D400D2D3DA /* AppDelegate.swift */; };
 		9CFF82A21EA841D400D2D3DA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFF82A11EA841D400D2D3DA /* ViewController.swift */; };
@@ -57,6 +58,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C429FF11EF67D3F0031E65C /* Extension_View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension_View.swift; sourceTree = "<group>"; };
 		9CB9C1AF1EA9A09B00AE943B /* NewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
 		9CFF829C1EA841D400D2D3DA /* ToolBoxProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToolBoxProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CFF829F1EA841D400D2D3DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 				9CFF82D21EA8425800D2D3DA /* Extension_CGRect.swift */,
 				9CFF82D31EA8425800D2D3DA /* Extension_String.swift */,
 				9CFF82D41EA8425800D2D3DA /* Extension_UIColor.swift */,
+				9C429FF11EF67D3F0031E65C /* Extension_View.swift */,
 			);
 			name = Extension;
 			path = ../../Extension;
@@ -399,6 +402,7 @@
 				9CFF82F91EA8425900D2D3DA /* NotifierProtocol.swift in Sources */,
 				9CFF82F31EA8425800D2D3DA /* Json.swift in Sources */,
 				9CFF82A21EA841D400D2D3DA /* ViewController.swift in Sources */,
+				9C429FF21EF67D3F0031E65C /* Extension_View.swift in Sources */,
 				9CFF82F61EA8425800D2D3DA /* SessionDelegate.swift in Sources */,
 				9CB9C1B01EA9A09B00AE943B /* NewViewController.swift in Sources */,
 				9CFF83001EA8425900D2D3DA /* HintView.swift in Sources */,
