@@ -52,5 +52,63 @@ public class ToolBox {
         return UIDevice.current.model.hasPrefix("iPad")
     }
     
+    // MARK: - interface orientation
+    
+    /** Check the device is protrait? */
+    public class func isProtrait() -> Bool {
+        return UIScreen.main.bounds.width < UIScreen.main.bounds.height
+    }
+    
+    /** Change the orientation to new. */
+    public class func orientation_changed(to: UIInterfaceOrientation) {
+        UIDevice.current.setValue(to.rawValue, forKey: "orientation")
+        UIApplication.shared.statusBarOrientation = to
+    }
+    
+    // MARK: - Capture Screen
+    
+    /** Capture view */
+    public class func screen(view: UIView) -> UIImage? {
+        var image: UIImage?
+        UIGraphicsBeginImageContextWithOptions(view.frame.size, false, 0)
+        if let context = UIGraphicsGetCurrentContext() {
+            view.layer.render(in: context)
+            image = UIGraphicsGetImageFromCurrentImageContext()
+        }
+        UIGraphicsEndImageContext()
+        return image
+    }
+    
+    /** Capture controller */
+    public class func screen(controller: UIViewController) -> UIImage? {
+        var image: UIImage?
+        UIGraphicsBeginImageContextWithOptions(UIScreen.main.bounds.size, false, 0)
+        if let context = UIGraphicsGetCurrentContext() {
+            controller.navigationController?.view.layer.render(in: context)
+            image = UIGraphicsGetImageFromCurrentImageContext()
+        }
+        UIGraphicsEndImageContext()
+        return image
+    }
+    
+    // MARK: - Other
+    
+    public class func minute(time: TimeInterval) -> String {
+        var str = ""
+        let min = Int(time) / 60
+        if min >= 10 {
+            str += "\(min)"
+        } else {
+            str += "0\(min)"
+        }
+        
+        let sec = Int(time) % 60
+        if sec >= 10 {
+            str += ":\(sec)"
+        } else {
+            str += ":0\(sec)"
+        }
+        return str
+    }
     
 }

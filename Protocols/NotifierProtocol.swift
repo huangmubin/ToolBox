@@ -17,6 +17,12 @@ public protocol NotifierProtocol { }
 extension NotifierProtocol {
     
     /** Observer a notify. */
+    @discardableResult
+    func observer(name: NSNotification.Name, object: Any? = nil, queue: OperationQueue? = nil, using: @escaping (Notification) -> Void) -> NSObjectProtocol {
+        return NotificationCenter.default.addObserver(forName: name, object: object, queue: queue, using: using)
+    }
+    
+    /** Observer a notify. */
     func observer(name: NSNotification.Name, selector: Selector, object: Any? = nil) {
         NotificationCenter.default.addObserver(self, selector: selector, name: name, object: object)
     }
@@ -37,6 +43,43 @@ extension NotifierProtocol {
             NotificationCenter.default.post(name: name, object: self, userInfo: infos)
         }
     }
+}
+
+extension NotifierProtocol {
+    
+    /** Observer a notify. */
+    @discardableResult
+    func observer(_ name: String, object: Any? = nil, queue: OperationQueue? = nil, using: @escaping (Notification) -> Void) -> NSObjectProtocol {
+        return NotificationCenter.default.addObserver(forName: NSNotification.Name.init(name), object: object, queue: queue, using: using)
+    }
+    
+    /** Observer a notify. */
+    func observer(_ name: String, selector: Selector, object: Any? = nil) {
+        NotificationCenter.default.addObserver(self, selector: selector, name: NSNotification.Name.init(name), object: object)
+    }
+    
+    /** remove observer a notify. */
+    func unobserver(_ name: String? = nil, object: Any? = nil) {
+        if name == nil {
+            NotificationCenter.default.removeObserver(self, name: nil, object: object)
+        }
+        else {
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.init(name!), object: object)
+        }
+    }
+    
+    /** Post a notify. */
+    func post(_ name: String, infos: [AnyHashable: Any]? = nil) {
+        NotificationCenter.default.post(name: NSNotification.Name.init(name), object: self, userInfo: infos)
+    }
+    
+    /** Post a notify in specific queue. */
+    func post(_ name: String, infos: [AnyHashable: Any]? = nil, inQueue: DispatchQueue) {
+        inQueue.async {
+            NotificationCenter.default.post(name: NSNotification.Name.init(name), object: self, userInfo: infos)
+        }
+    }
+    
 }
 
 // MARK: - Notify Object

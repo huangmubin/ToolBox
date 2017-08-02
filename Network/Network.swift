@@ -381,7 +381,10 @@ extension Network: SessionDelegate {
     @objc(urlSession:dataTask:didReceiveResponse:)
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceiveResponse response: URLResponse) {
         self.tasks.current?.response = response
-        
+        if let http = response as? HTTPURLResponse {
+            let length = http.allHeaderFields["Content-Length"] as? String
+            self.tasks.current?.size = Int(length ?? "0") ?? 0
+        }
         if let receive = self.tasks.current?.receiveResponse, let task = self.tasks.current {
             if let feedback = feedbackThread {
                 feedback.async { [task = task, receive = receive] in
@@ -487,6 +490,17 @@ extension Network {
         public var data: Data?
         /** the task error */
         public var error: Error?
+        
+        public var size: Int = 0
+        /**  */
+        public var note: String? {
+            if let data = data {
+                if let text = String(data: data, encoding: String.Encoding.utf8) {
+                    return text
+                }
+            }
+            return nil
+        }
         
         // MARK: - Quick access data
         
@@ -615,6 +629,16 @@ extension Network {
         header["Range"] = "bytes=\(size)-"
         return header
     }
+    
+    
+    /**
+     base64
+     */
+    public class func base64(text: String) -> String? {
+        let data = text.data(using: String.Encoding.utf8)
+        return data?.base64EncodedString()
+    }
+    
     
 }
 

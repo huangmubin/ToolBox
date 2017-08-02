@@ -21,6 +21,16 @@ public class Json: CustomStringConvertible {
     /** The temp json data when the user visiting. */
     private var temp: Any?
     
+    /** print the data */
+    func scan() {
+        if let j = json {
+            print(j)
+        }
+        else {
+            print("nil")
+        }
+    }
+    
     /**
      Set the json data.
      
