@@ -1,29 +1,28 @@
 //
-//  Extension_Device.swift
-//  ToolBoxProject
+//  Ex_Device.swift
+//  SwiftiOSTests
 //
-//  Created by Myron on 2017/8/8.
-//  Copyright © 2017年 Myron. All rights reserved.
+//  Created by 黄穆斌 on 2017/12/14.
+//  Copyright © 2017年 myron. All rights reserved.
 //
 
 import UIKit
 
 extension UIDevice {
     
+    // MARK: - Device Info
     
-    // MARK: - 设备类型信息
-    
-    /** 判断是否是 iPhone */
+    /** is iPhone */
     public class func is_iPhone() -> Bool {
         return UIDevice.current.model.hasPrefix("iPhone")
     }
     
-    /** 判断是否是 iPad */
+    /** is iPad */
     public class func is_iPad() -> Bool {
         return UIDevice.current.model.hasPrefix("iPad")
     }
     
-    /** 获取当前设备的型号 iPhone 6s */
+    /** get the current model: iPhone 6s */
     public class func model() -> String {
         var system_info = utsname()
         uname(&system_info)
@@ -113,29 +112,29 @@ extension UIDevice {
         return "Apple"
     }
     
-    /** 获取设备名称 Myron 的 iPad */
+    /** get current device's name: Myron 的 iPad */
     public class func device_name() -> String {
         return UIDevice.current.name
     }
     
-    /** 获取系统版本 10.1.1 */
+    /** get system version: 10.1.1 */
     public class func system_version() -> String {
         return UIDevice.current.systemVersion
     }
     
-    /** 获取设备 uuid 3E0B7D22-C3EB-46C1-A82C-3D82596FC0A6 */
+    /** get device'uuid: 3E0B7D22-C3EB-46C1-A82C-3D82596FC0A6 */
     public class func uuid() -> String {
         return UIDevice.current.identifierForVendor?.uuidString ?? ""
     }
     
     // MARK: - 设备方向
     
-    /** 是否是竖直方向 */
+    /** Screen orientation is protrait? */
     public class func is_protrait() -> Bool {
         return UIScreen.main.bounds.width < UIScreen.main.bounds.height
     }
     
-    /** 是否是横向 */
+    /** Screen orientation is langscape? */
     public class func is_landscape() -> Bool {
         return UIScreen.main.bounds.width > UIScreen.main.bounds.height
     }
@@ -148,7 +147,7 @@ extension UIDevice {
     
     // MARK: - 设备内存信息
     
-    /** 获取设备硬盘总容量 */
+    /** Get the device hard disc size */
     public class func total_size() -> Int {
         if let attribute = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory()) {
             if let size = attribute[FileAttributeKey.systemSize] as? Int {
@@ -158,7 +157,7 @@ extension UIDevice {
         return 0
     }
     
-    /** 获取设备硬盘剩余容量 */
+    /** Get the device hard disc size */
     public class func free_size() -> Int {
         if let attribute = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory()) {
             if let size = attribute[FileAttributeKey.systemFreeSize] as? Int {
@@ -167,6 +166,5 @@ extension UIDevice {
         }
         return 0
     }
-    
     
 }

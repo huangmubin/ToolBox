@@ -1,12 +1,11 @@
 //
-//  Extension_String.swift
-//  NetworkTestProject
+//  Ex_String.swift
+//  SwiftiOS
 //
-//  Created by 黄穆斌 on 2017/3/17.
-//  Copyright © 2017年 MuBinHuang. All rights reserved.
+//  Created by 黄穆斌 on 2017/12/14.
+//  Copyright © 2017年 myron. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
 extension String {
@@ -35,13 +34,13 @@ extension String {
      - parameter range: s ..< e
      - returns: a sub string
      */
-    subscript(range: Range<Int>) -> String {
+    public subscript(range: CountableRange<Int>) -> String {
         return String(self[self.index(self.startIndex, offsetBy: range.lowerBound) ..< self.index(self.startIndex, offsetBy: range.upperBound)])
     }
     
     // MARK: - Size
     
-    static let string_size_label: UILabel = {
+    public static let string_size_label: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label

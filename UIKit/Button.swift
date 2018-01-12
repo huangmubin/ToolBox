@@ -1,204 +1,217 @@
 //
 //  Button.swift
-//  ToolBoxUIKit
+//  SwiftiOS
 //
-//  Created by Myron on 2017/3/30.
+//  Created by Myron on 2017/12/15.
 //  Copyright © 2017年 Myron. All rights reserved.
 //
 
 import UIKit
 
-enum ButtonTouchState {
-    case began
-    case moved
-    case ended
-    case canceled
-    case estimated
-}
-
 protocol ButtonTouchDelegate: class {
-    func button_touch(state: ButtonTouchState, touches: Set<UITouch>, with event: UIEvent?)
+    func button_touch(state: UIGestureRecognizerState, touches: Set<UITouch>, with event: UIEvent?)
 }
 
 class Button: UIButton {
 
-    @IBInspectable
-    var note: String = ""
+    /** note value */
+    @IBInspectable var note: String = ""
     
-    // MARK: - Init
+    // MARK: - Layer
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        deploy()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        deploy()
-    }
-    
-    private var tempSelect: Bool?
-    private func deploy() {
-        isSelected = true
-        tempSelect = false
-        DispatchQueue.main.async {
-            for view in self.subviews {
-                if view is UIImageView && view !== self.imageView {
-                    view.removeFromSuperview()
-                    self.isSelected = self.tempSelect!
-                    self.tempSelect = nil
-                }
-            }
-        }
-    }
-
-    // MARK: - Shadow
-    
-    @IBInspectable
-    var corner: CGFloat = 0 {
+    /** layer cornerRedius */
+    @IBInspectable var corner: CGFloat = 0 {
         didSet {
             layer.cornerRadius = corner
         }
     }
     
-    @IBInspectable
-    var opacity: Float = 0 {
+    /** layer shadowOpacity */
+    @IBInspectable var opacity: Float = 0 {
         didSet {
             layer.shadowOpacity = opacity
         }
     }
     
-    @IBInspectable
-    var offset: CGPoint = CGPoint.zero {
-        didSet {
-            layer.shadowOffset = CGSize(width: offset.x, height: offset.y)
-        }
-    }
-    
-    @IBInspectable
-    var radius: CGFloat = 0 {
+    /** layer shadowRadius */
+    @IBInspectable var radius: CGFloat = 0 {
         didSet {
             layer.shadowRadius = radius
         }
     }
     
-    // MARK: - Border
+    /** layer shadowOffset */
+    @IBInspectable var offset: CGPoint = CGPoint.zero {
+        didSet {
+            layer.shadowOffset = CGSize(width: offset.x, height: offset.y)
+        }
+    }
     
-    @IBInspectable
-    var borderWidth: CGFloat = 0 {
+    /** layer shadowColor */
+    @IBInspectable var shadowColor: UIColor? = nil {
+        didSet {
+            layer.shadowColor = shadowColor?.cgColor
+        }
+    }
+    
+    /** layer borderWidth */
+    @IBInspectable var borderWidth: CGFloat = 0 {
         didSet {
             layer.borderWidth = borderWidth
         }
     }
     
-    @IBInspectable
-    var borderColor: UIColor? = nil {
+    /** layer borderColor */
+    @IBInspectable var borderColor: UIColor? = nil {
         didSet {
             layer.borderColor = borderColor?.cgColor
         }
     }
     
-    // MARK: - Color
+    // MARK: - State
     
-    override var backgroundColor: UIColor? {
+    
+    enum State: Int {
+        case normal = 0
+        case selected
+        case invalid
+    }
+    
+    /** Button state */
+    public var button_state: State = .normal {
         didSet {
-            layer.backgroundColor = isSelected ? tintColor.cgColor : color.cgColor
+            color_update()
         }
     }
     
-    @IBInspectable
-    var color: UIColor = UIColor.blue {
+    /** Button state, only 0, 1, 2 */
+    @IBInspectable var button_state_value: Int = 0 {
         didSet {
-            layer.backgroundColor = isSelected ? tintColor.cgColor : color.cgColor
+            button_state = State(rawValue: button_state_value)!
         }
+    }
+    
+    // MARK: - Color
+    
+    /** Normal state color */
+    @IBInspectable var normal_color: UIColor = UIColor.blue {
+        didSet {
+            color_update()
+        }
+    }
+    
+    /** Selected state color */
+    @IBInspectable var selected_color: UIColor = UIColor.white {
+        didSet {
+            color_update()
+        }
+    }
+    
+    /** Invalid state color */
+    @IBInspectable var invalid_color: UIColor = UIColor.lightGray {
+        didSet {
+            color_update()
+        }
+    }
+    
+    /** Background color */
+    @IBInspectable var background_color: UIColor = UIColor.clear {
+        didSet {
+            color_update()
+        }
+    }
+    
+    /** Update the label and background color. */
+    public func color_update() {
+        switch self.button_state {
+        case .normal:
+            if self.isSelected { self.isSelected = false }
+            if !self.isEnabled { self.isEnabled = true }
+            self.setTitleColor(self.normal_color, for: .normal)
+            self.layer.backgroundColor = self.background_color.cgColor
+        case .selected:
+            if !self.isSelected { self.isSelected = true }
+            if !self.isEnabled { self.isEnabled = true }
+            self.setTitleColor(self.selected_color, for: .normal)
+            self.setTitleColor(self.selected_color, for: .selected)
+            self.layer.backgroundColor = self.normal_color.cgColor
+        case .invalid:
+            if self.isSelected { self.isSelected = false }
+            if self.isEnabled { self.isEnabled = false }
+            self.setTitleColor(self.invalid_color, for: .normal)
+            self.layer.backgroundColor = self.background_color.withAlphaComponent(0.5).cgColor
+        }
+        self.tintColor = self.backgroundColor
     }
     
     // MARK: - Override
     
     override var isHighlighted: Bool {
         didSet {
-            if isHighlighted {
-                UIView.animate(withDuration: 0.1, animations: {
-                    self.alpha = 0.8
-                })
-            }
-            else {
-                UIView.animate(withDuration: 0.1, animations: {
-                    self.alpha = 1
-                })
-            }
+            UIView.animate(withDuration: 0.1, animations: {
+                self.alpha = self.isHighlighted ? 0.8 : 1
+            })
         }
     }
     
     override var isSelected: Bool {
         didSet {
-            if tempSelect != nil {
-                tempSelect = isSelected
-            }
             if isSelected {
-                self.layer.backgroundColor = self.tintColor.cgColor
-            }
-            else {
-                self.layer.backgroundColor = self.color.cgColor
+                if button_state.rawValue != 1 {
+                    button_state = .selected
+                }
+            } else {
+                if button_state.rawValue == 1 {
+                    button_state = .normal
+                }
             }
         }
     }
     
-    // MARK: - Touches
+    override var isEnabled: Bool {
+        didSet {
+            if isEnabled {
+                if button_state.rawValue == 2 {
+                    button_state = .normal
+                }
+            } else {
+                if button_state.rawValue != 2 {
+                    button_state = .invalid
+                }
+            }
+        }
+    }
     
-    var current_touch: UITouch?
-    @IBOutlet weak var touch_delegate_link: NSObject? {
+    // MARK: - Touch
+    
+    /** ButtonTouchDelegate */
+    weak var touch_delegate: ButtonTouchDelegate?
+    @IBOutlet weak var touch_delegate_link: NSObject? = nil {
         didSet {
             if let delegate = touch_delegate_link as? ButtonTouchDelegate {
-                touch_delegate = delegate
+                self.touch_delegate = delegate
             }
         }
     }
-    weak var touch_delegate: ButtonTouchDelegate?
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        touch_delegate?.button_touch(
-            state: ButtonTouchState.began,
-            touches: touches,
-            with: event
-        )
-        
+        touch_delegate?.button_touch(state: .began, touches: touches, with: event)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
-        touch_delegate?.button_touch(
-            state: ButtonTouchState.moved,
-            touches: touches,
-            with: event
-        )
+        touch_delegate?.button_touch(state: .changed, touches: touches, with: event)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        touch_delegate?.button_touch(
-            state: ButtonTouchState.ended,
-            touches: touches,
-            with: event
-        )
+        touch_delegate?.button_touch(state: .ended, touches: touches, with: event)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        touch_delegate?.button_touch(
-            state: ButtonTouchState.canceled,
-            touches: touches,
-            with: event
-        )
+        touch_delegate?.button_touch(state: .cancelled, touches: touches, with: event)
     }
     
-    override func touchesEstimatedPropertiesUpdated(_ touches: Set<UITouch>) {
-        super.touchesEstimatedPropertiesUpdated(touches)
-        touch_delegate?.button_touch(
-            state: ButtonTouchState.estimated,
-            touches: touches,
-            with: nil
-        )
-    }
 }

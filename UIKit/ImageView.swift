@@ -1,14 +1,36 @@
 //
 //  ImageView.swift
-//  ToolBoxUIKit
+//  SwiftiOS
 //
-//  Created by Myron on 2017/3/30.
+//  Created by Myron on 2017/12/15.
 //  Copyright © 2017年 Myron. All rights reserved.
 //
 
 import UIKit
 
 class ImageView: UIImageView {
+    
+    /** layer cornerRedius */
+    @IBInspectable var corner: CGFloat = 0 {
+        didSet {
+            mask?.layer.cornerRadius = corner
+            layer.cornerRadius = corner
+        }
+    }
+    
+    /** layer borderWidth */
+    @IBInspectable var borderWidth: CGFloat = 0 {
+        didSet {
+            layer.borderWidth = borderWidth
+        }
+    }
+    
+    /** layer borderColor */
+    @IBInspectable var borderColor: UIColor? = nil {
+        didSet {
+            layer.borderColor = borderColor?.cgColor
+        }
+    }
     
     // MARK: - Init
     
@@ -37,7 +59,6 @@ class ImageView: UIImageView {
     
     // MARK: - Size
     
-    
     override var frame: CGRect {
         didSet {
             mask?.frame = bounds
@@ -49,18 +70,5 @@ class ImageView: UIImageView {
             mask?.frame = bounds
         }
     }
-
-    // MARK: - Corner
-    
-    @IBInspectable
-    var corner: CGFloat {
-        set {
-            mask?.layer.cornerRadius = newValue
-        }
-        get {
-            return mask?.layer.cornerRadius ?? 0
-        }
-    }
-    
     
 }
