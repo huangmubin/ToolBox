@@ -57,7 +57,6 @@ extension Calendar {
         let is_leep_year = (in_year % 4 == 0 && in_year % 100 != 0) || (in_year % 400 == 0)
         if let in_month = in_month {
             let total = in_year * 12 + in_month
-            let year = total / 12
             let month = total % 12
             switch month {
             case 2: return is_leep_year ? 29 : 28
