@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TableViewController: UITableViewController {
+class TableViewController: UITableViewController, TableViewCellDelegate {
     
     // MARK: - Appearing
     
@@ -124,6 +124,10 @@ class TableViewController: UITableViewController {
     func tab_controller_disappear() {
         is_appearing_controller = false
     }
+    
+    // MARK: - TableViewCellDelegate
+    
+    func table_view(cell: TableViewCell, action_at index: IndexPath, sender: UIView?) { }
     
 }
 

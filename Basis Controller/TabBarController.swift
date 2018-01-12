@@ -71,10 +71,19 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
                 return false
             }
         }
+        if let appear_controller = viewController as? TableViewController {
+            if appear_controller.tab_controller_will_appear() {
+                (tabBarController.selectedViewController as? ViewController)?.tab_controller_disappear()
+                return true
+            } else {
+                return false
+            }
+        }
         return true
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         (viewController as? ViewController)?.tab_controller_appear()
+        (viewController as? TableViewController)?.tab_controller_appear()
     }
 }
