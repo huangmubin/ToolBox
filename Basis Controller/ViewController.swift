@@ -42,6 +42,16 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         is_appearing_controller = true
+        switch (supportedInterfaceOrientations, UIDevice.current.orientation) {
+        case (.all, _): break
+        case (.portrait, .landscapeLeft), (.portrait, .landscapeRight):
+            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            UIApplication.shared.statusBarOrientation = .portrait
+        case (.landscape, .portrait):
+            UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation")
+            UIApplication.shared.statusBarOrientation = .landscapeLeft
+        default: break
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
