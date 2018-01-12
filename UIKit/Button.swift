@@ -8,6 +8,18 @@
 
 import UIKit
 
+enum ButtonTouchState {
+    case began
+    case moved
+    case ended
+    case canceled
+    case estimated
+}
+
+protocol ButtonTouchDelegate: class {
+    func button_touch(state: ButtonTouchState, touches: Set<UITouch>, with event: UIEvent?)
+}
+
 class Button: UIButton {
 
     @IBInspectable
@@ -70,6 +82,22 @@ class Button: UIButton {
         }
     }
     
+    // MARK: - Border
+    
+    @IBInspectable
+    var borderWidth: CGFloat = 0 {
+        didSet {
+            layer.borderWidth = borderWidth
+        }
+    }
+    
+    @IBInspectable
+    var borderColor: UIColor? = nil {
+        didSet {
+            layer.borderColor = borderColor?.cgColor
+        }
+    }
+    
     // MARK: - Color
     
     override var backgroundColor: UIColor? {
@@ -114,5 +142,63 @@ class Button: UIButton {
                 self.layer.backgroundColor = self.color.cgColor
             }
         }
+    }
+    
+    // MARK: - Touches
+    
+    var current_touch: UITouch?
+    @IBOutlet weak var touch_delegate_link: NSObject? {
+        didSet {
+            if let delegate = touch_delegate_link as? ButtonTouchDelegate {
+                touch_delegate = delegate
+            }
+        }
+    }
+    weak var touch_delegate: ButtonTouchDelegate?
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        touch_delegate?.button_touch(
+            state: ButtonTouchState.began,
+            touches: touches,
+            with: event
+        )
+        
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        touch_delegate?.button_touch(
+            state: ButtonTouchState.moved,
+            touches: touches,
+            with: event
+        )
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        touch_delegate?.button_touch(
+            state: ButtonTouchState.ended,
+            touches: touches,
+            with: event
+        )
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        touch_delegate?.button_touch(
+            state: ButtonTouchState.canceled,
+            touches: touches,
+            with: event
+        )
+    }
+    
+    override func touchesEstimatedPropertiesUpdated(_ touches: Set<UITouch>) {
+        super.touchesEstimatedPropertiesUpdated(touches)
+        touch_delegate?.button_touch(
+            state: ButtonTouchState.estimated,
+            touches: touches,
+            with: nil
+        )
     }
 }

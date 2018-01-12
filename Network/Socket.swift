@@ -393,7 +393,8 @@ extension Socket {
         let time_f  = modf(time)
         let sec     = Int32(time_f.0)
         let usec    = Int32(time_f.1 * 1000000)
-        let w_size = c_socket_write_t(socket: socket, buffer: text, length: Int32(text.characters.count), sec: sec, usec: usec)
+        let w_size = c_socket_write_t(socket: socket, buffer: text, length: Int32(text.count), sec: sec, usec: usec)
+        //let w_size = c_socket_write_t(socket: socket, buffer: text, length: Int32(text.characters.count), sec: sec, usec: usec)
         try SocketError.try(w_size)
     }
     func write(data: Data, time: TimeInterval = 0) throws {
@@ -417,7 +418,8 @@ extension Socket {
         let time_f  = modf(time)
         let sec     = Int32(time_f.0)
         let usec    = Int32(time_f.1 * 1000000)
-        let w_size = c_socket_send_t(socket: socket, buffer: text, length: Int32(text.characters.count), sec: sec, usec: usec)
+        let w_size = c_socket_send_t(socket: socket, buffer: text, length: Int32(text.count), sec: sec, usec: usec)
+        //let w_size = c_socket_send_t(socket: socket, buffer: text, length: Int32(text.characters.count), sec: sec, usec: usec)
         try SocketError.try(w_size)
     }
     func send(data: Data, time: TimeInterval = 0) throws {
@@ -448,7 +450,8 @@ extension Socket {
         let time_f  = modf(time)
         let sec     = Int32(time_f.0)
         let usec    = Int32(time_f.1 * 1000000)
-        let length = Int32(text.characters.count)
+        let length = Int32(text.count)
+        //let length = Int32(text.characters.count)
         let w_size = c_socket_sendto_t(socket: socket, buffer: text, length: length, address: address, port: port, sec: sec, usec: usec)
         try SocketError.try(w_size)
     }

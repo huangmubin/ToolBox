@@ -33,6 +33,15 @@ extension Array {
         return removes
     }
     
+//    /** 获取子数组 */
+//    subscript(range: Range<Int>) -> Array {
+//        var new = Array()
+//        for i in range.lowerBound ..< range.upperBound {
+//            new.append(self[i])
+//        }
+//        return new
+//    }
+    
 }
 
 

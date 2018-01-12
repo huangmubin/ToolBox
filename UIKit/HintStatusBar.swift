@@ -281,7 +281,7 @@ public class HintStatusBar: UIView {
     
     // MARK: Notification
     
-    func statusBarOrientationDidChanged() {
+    @objc func statusBarOrientationDidChanged() {
         DispatchQueue.main.async {
             self.frame.size.width = UIScreen.main.bounds.width
             self.updateContainer()
@@ -323,7 +323,7 @@ public class HintStatusBar: UIView {
         }
         var timeOut = time
         timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 1), queue: DispatchQueue.main)
-        timer?.scheduleRepeating(wallDeadline: DispatchWallTime.now(), interval: DispatchTimeInterval.seconds(1))
+        timer?.schedule(wallDeadline: DispatchWallTime.now(), repeating: DispatchTimeInterval.seconds(1))
         timer?.setEventHandler(handler: { [weak self] in
             if timeOut <= 0 {
                 self?.hideAnimation()
@@ -375,7 +375,7 @@ extension HintStatusBar {
         
         // MARK: Notification
         
-        func statusBarOrientationDidChanged() {
+        @objc func statusBarOrientationDidChanged() {
             DispatchQueue.main.async {
                 let iPhone = UIDevice.current.model.hasPrefix("iPhone")
                 let height = self.height
@@ -469,7 +469,8 @@ public class HintStatusTextBar: HintStatusBar, HintViewTextBarProtocol {
         let label = UILabel()
         label.textAlignment = .center
         if #available(iOS 8.2, *) {
-            label.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightSemibold)
+            label.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.semibold)
+            
         } else {
             label.font = UIFont.boldSystemFont(ofSize: 12)
         }
@@ -530,7 +531,7 @@ public class HintStatusLoadingBar: HintStatusTextBar, HintViewColorBarProtocol {
     
     func startLoadingAnimation() {
         let loadingTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 1), queue: DispatchQueue.main)
-        loadingTimer.scheduleRepeating(wallDeadline: DispatchWallTime.now(), interval: DispatchTimeInterval.milliseconds(500))
+        loadingTimer.schedule(wallDeadline: DispatchWallTime.now(), repeating: DispatchTimeInterval.milliseconds(500))
         loadingTimer.setEventHandler(handler: { [weak self] in
             if let view = self {
                 switch view.colorIndex {

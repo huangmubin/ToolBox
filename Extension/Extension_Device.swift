@@ -1,56 +1,30 @@
 //
-//  ToolBox.swift
-//  AutoLayoutProject
+//  Extension_Device.swift
+//  ToolBoxProject
 //
-//  Created by 黄穆斌 on 2017/3/18.
-//  Copyright © 2017年 MuBinHuang. All rights reserved.
+//  Created by Myron on 2017/8/8.
+//  Copyright © 2017年 Myron. All rights reserved.
 //
 
 import UIKit
-import Photos
 
-
-// MARK: - ToolBox
-
-public class ToolBox {
+extension UIDevice {
     
-    // MARK: - Random Number
     
-    /**
-     count a random number in range
-     */
-    public class func random(range: Range<Int>) -> Int {
-        return  Int(arc4random_uniform(UInt32(range.count))) + range.lowerBound
-    }
+    // MARK: - 设备类型信息
     
-    /**
-     count a random number in 0 ..< 1
-     */
-    public class func random() -> Double {
-        return Double(arc4random_uniform(UInt32.max)) / Double(UInt32.max)
-    }
-    
-    // MARK: - Device Model
-    
-    /**
-     check the current device is't iPhone.
-     */
-    public class func isiPhone() -> Bool {
+    /** 判断是否是 iPhone */
+    public class func is_iPhone() -> Bool {
         return UIDevice.current.model.hasPrefix("iPhone")
     }
     
-    /**
-     check the current device is't iPad.
-     */
-    public class func isiPad() -> Bool {
+    /** 判断是否是 iPad */
+    public class func is_iPad() -> Bool {
         return UIDevice.current.model.hasPrefix("iPad")
     }
     
-    
-    /**
-     Get the current device version
-     */
-    public class func device_version() -> String {
+    /** 获取当前设备的型号 iPhone 6s */
+    public class func model() -> String {
         var system_info = utsname()
         uname(&system_info)
         var machine = [Int8]()
@@ -139,26 +113,31 @@ public class ToolBox {
         return "Apple"
     }
     
-    /** get device name */
+    /** 获取设备名称 Myron 的 iPad */
     public class func device_name() -> String {
         return UIDevice.current.name
     }
     
-    /** get system version */
+    /** 获取系统版本 10.1.1 */
     public class func system_version() -> String {
         return UIDevice.current.systemVersion
     }
     
-    /** Device uuid */
-    public class func device_uuid() -> String {
+    /** 获取设备 uuid 3E0B7D22-C3EB-46C1-A82C-3D82596FC0A6 */
+    public class func uuid() -> String {
         return UIDevice.current.identifierForVendor?.uuidString ?? ""
     }
     
-    // MARK: - interface orientation
+    // MARK: - 设备方向
     
-    /** Check the device is protrait? */
-    public class func isProtrait() -> Bool {
+    /** 是否是竖直方向 */
+    public class func is_protrait() -> Bool {
         return UIScreen.main.bounds.width < UIScreen.main.bounds.height
+    }
+    
+    /** 是否是横向 */
+    public class func is_landscape() -> Bool {
+        return UIScreen.main.bounds.width > UIScreen.main.bounds.height
     }
     
     /** Change the orientation to new. */
@@ -167,91 +146,26 @@ public class ToolBox {
         UIApplication.shared.statusBarOrientation = to
     }
     
-    // MARK: - Capture Screen
+    // MARK: - 设备内存信息
     
-    /** Capture view */
-    public class func screen(view: UIView) -> UIImage? {
-        var image: UIImage?
-        UIGraphicsBeginImageContextWithOptions(view.frame.size, false, 0)
-        if let context = UIGraphicsGetCurrentContext() {
-            view.layer.render(in: context)
-            image = UIGraphicsGetImageFromCurrentImageContext()
+    /** 获取设备硬盘总容量 */
+    public class func total_size() -> Int {
+        if let attribute = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory()) {
+            if let size = attribute[FileAttributeKey.systemSize] as? Int {
+                return size
+            }
         }
-        UIGraphicsEndImageContext()
-        return image
+        return 0
     }
     
-    /** Capture controller */
-    public class func screen(controller: UIViewController) -> UIImage? {
-        var image: UIImage?
-        UIGraphicsBeginImageContextWithOptions(UIScreen.main.bounds.size, false, 0)
-        if let context = UIGraphicsGetCurrentContext() {
-            controller.navigationController?.view.layer.render(in: context)
-            image = UIGraphicsGetImageFromCurrentImageContext()
+    /** 获取设备硬盘剩余容量 */
+    public class func free_size() -> Int {
+        if let attribute = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory()) {
+            if let size = attribute[FileAttributeKey.systemFreeSize] as? Int {
+                return size
+            }
         }
-        UIGraphicsEndImageContext()
-        return image
-    }
-    
-    // MARK: - App Infos
-    
-    /** Get the app version */
-    public class func app_version() -> String {
-        return (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "Version default"
-    }
-    
-    
-    // MARK: - Time
-    
-    /** 获取当前时区的偏移量 */
-    public class func timezone_offset() -> Double {
-        let zone = TimeZone.current
-        let offset = zone.secondsFromGMT(for: Date())
-        //print("Time Zone = \(zone); offset = \(offset)")
-        return Double(offset)
-    }
-    
-    /** 时间格式化 */
-    public class func minute(time: TimeInterval) -> String {
-        var str = ""
-        let min = Int(time) / 60
-        if min >= 10 {
-            str += "\(min)"
-        } else {
-            str += "0\(min)"
-        }
-        
-        let sec = Int(time) % 60
-        if sec >= 10 {
-            str += ":\(sec)"
-        } else {
-            str += ":0\(sec)"
-        }
-        return str
-    }
-    
-    
-    // MARK: - 保存图片和视频到本地相册
-    
-    /** 保存图片到手机相册 */
-    class func save_image_to_iPhone_album(image: UIImage, complete: @escaping (Bool, Error?) -> Void) {
-        PHPhotoLibrary.shared().performChanges({
-            let _ = PHAssetChangeRequest.creationRequestForAsset(from: image)
-        }, completionHandler: complete)
-    }
-    
-    /** 保存图片到手机相册 */
-    class func save_image_to_iPhone_album(image_url: URL, complete: @escaping (Bool, Error?) -> Void) {
-        PHPhotoLibrary.shared().performChanges({
-            let _ = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: image_url)
-        }, completionHandler: complete)
-    }
-    
-    /** 保存视频到手机相册 */
-    class func save_video_to_iPhone_album(video_url: URL, complete: @escaping (Bool, Error?) -> Void) {
-        PHPhotoLibrary.shared().performChanges({
-            let _ = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: video_url)
-        }, completionHandler: complete)
+        return 0
     }
     
     

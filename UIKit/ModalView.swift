@@ -102,7 +102,7 @@ class ModalView: UIView {
     
     // MARK: Orientation
     
-    func orientation() {
+    @objc func orientation() {
         DispatchQueue.main.async { [weak self] in
             if let view = self?.superview {
                 UIView.animate(withDuration: 0.25, animations: {
@@ -223,11 +223,11 @@ class ModalView: UIView {
         })
     }
     
-    func cancel_action(_ sender: UIButton) {
+    @objc func cancel_action(_ sender: UIButton) {
         dismiss()
     }
     
-    func sure_action(_ sender: UIButton) {
+    @objc func sure_action(_ sender: UIButton) {
         self.action?(self, value)
         self.action = nil
         dismiss()
@@ -440,7 +440,8 @@ class ModalView_Slider: ModalView {
         label.text = ""
         return label
     }()
-    func slider_action(_ sender: UISlider) {
+    
+    @objc func slider_action(_ sender: UISlider) {
         let count = Float(datas.count - 1)
         index = Int((sender.value + (1 / count / 2)) * count)
     }

@@ -1,4 +1,5 @@
 import SystemConfiguration.CaptiveNetwork
+import Foundation
 
 class WiFi {
     

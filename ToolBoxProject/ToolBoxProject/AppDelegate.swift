@@ -13,10 +13,46 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        let app = UIApplication.shared
+        if app.applicationState == UIApplicationState.active || app.applicationState == UIApplicationState.inactive {
+            if let ivar = class_getInstanceVariable(app.classForCoder, "_statusBar") {
+                if let status = object_getIvar(app, ivar) as? UIView {
+                    for aview in status.subviews {
+                        var battery_level = 0
+                        
+                    }
+                }
+            }
+        }
+        
+//        /// 获取精准电池电量
+//        + (CGFloat)getCurrentBatteryLevel {
+//            UIApplication *app = [UIApplication sharedApplication];
+//            if (app.applicationState == UIApplicationStateActive||app.applicationState==UIApplicationStateInactive) {
+//                Ivar ivar=  class_getInstanceVariable([app class],"_statusBar");
+//                id status  = object_getIvar(app, ivar);
+//                for (id aview in [status subviews]) {
+//                    int batteryLevel = 0;
+//                    for (id bview in [aview subviews]) {
+//                        if ([NSStringFromClass([bview class]) caseInsensitiveCompare:@"UIStatusBarBatteryItemView"] == NSOrderedSame&&[[[UIDevice currentDevice] systemVersion] floatValue] >=6.0) {
+//                            Ivar ivar=  class_getInstanceVariable([bview class],"_capacity");
+//                            if(ivar) {
+//                                batteryLevel = ((int (*)(id, Ivar))object_getIvar)(bview, ivar);
+//                                if (batteryLevel > 0 && batteryLevel <= 100) {
+//                                    return batteryLevel;
+//                                } else {
+//                                    return 0;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            return 0;
+//        }
         return true
     }
 

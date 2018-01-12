@@ -209,7 +209,7 @@ class SetsTableViewCell_Switch: SetsTableViewCell {
     var item_switch: UISwitch = UISwitch()
     var layout_switch_trailing: NSLayoutConstraint?
     
-    func switch_action(_ sender: UISwitch) {
+    @objc func switch_action(_ sender: UISwitch) {
         delegate?.setsTableView?(
             cell: self,
             actionAtIndex: index!,
@@ -602,7 +602,7 @@ class SetsTableViewCell_Action: SetsTableViewCell {
         item_button.layer.borderColor = tableview!.button_color!.cgColor
     }
     
-    func button_action(_ sender: UIButton) {
+    @objc func button_action(_ sender: UIButton) {
         tableview?.tableView(tableview!, didSelectRowAt: index!)
     }
     

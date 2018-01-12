@@ -28,7 +28,7 @@ extension NotifierProtocol {
     }
     
     /** remove observer a notify. */
-    func unobserver(name: NSNotification.Name? = nil, object: Any? = nil) {
+    func unobserver(name: NSNotification.Name?, object: Any? = nil) {
         NotificationCenter.default.removeObserver(self, name: name, object: object)
     }
     

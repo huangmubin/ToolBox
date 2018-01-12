@@ -234,10 +234,10 @@ public class Layouter {
     }
     
     @discardableResult
-    public func contrainer(foreach block: (Int, NSLayoutConstraint) -> String?) -> Layouter {
+    public func contrainer(orient: Layouter.Orientation = Layouter.Orientation.portrait, foreach block: (Int, NSLayoutConstraint) -> String?) -> Layouter {
         for (index, layout) in _constrants.enumerated() {
             if let key = block(index, layout) {
-                _contrainer?.append(key: key, layout: layout)
+                _contrainer?.append(key: key, layout: layout, orient: orient)
             }
         }
         return self
@@ -259,7 +259,7 @@ extension Layouter {
         related: NSLayoutRelation   = .equal
         ) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: edge, relatedBy: related, toItem: relative, attribute: to, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -280,7 +280,7 @@ extension Layouter {
         related: NSLayoutRelation = .equal
         ) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .height, relatedBy: related, toItem: relative, attribute: .height, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -295,7 +295,7 @@ extension Layouter {
         related: NSLayoutRelation = .equal
         ) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .height, relatedBy: related, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -305,7 +305,7 @@ extension Layouter {
     @discardableResult
     public func width(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .width, relatedBy: related, toItem: relative, attribute: .width, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -315,7 +315,7 @@ extension Layouter {
     @discardableResult
     public func widthSelf(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .width, relatedBy: related, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -325,7 +325,7 @@ extension Layouter {
     @discardableResult
     public func aspect(type: Bool = true, constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: type ? .width : .height, relatedBy: related, toItem: view, attribute: type ? .height : .width, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -336,13 +336,13 @@ extension Layouter {
     public func size(w: CGFloat, h: CGFloat, priority: Float = 1000) -> Layouter {
         let _ = {
             let lay = NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: w)
-            lay.priority = priority
+            lay.priority = UILayoutPriority(priority)
             superview.addConstraint(lay)
             _constrants.append(lay)
         }()
         let _ = {
             let lay = NSLayoutConstraint(item: view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: h)
-            lay.priority = priority
+            lay.priority = UILayoutPriority(priority)
             superview.addConstraint(lay)
             _constrants.append(lay)
         }()
@@ -354,13 +354,13 @@ extension Layouter {
     public func size(priority: Float = 1000) -> Layouter {
         let _ = {
             let lay = NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal, toItem: relative, attribute: .width, multiplier: 1, constant: 0)
-            lay.priority = priority
+            lay.priority = UILayoutPriority(priority)
             superview.addConstraint(lay)
             _constrants.append(lay)
         }()
         let _ = {
             let lay = NSLayoutConstraint(item: view, attribute: .height, relatedBy: .equal, toItem: relative, attribute: .height, multiplier: 1, constant: 0)
-            lay.priority = priority
+            lay.priority = UILayoutPriority(priority)
             superview.addConstraint(lay)
             _constrants.append(lay)
         }()
@@ -376,7 +376,7 @@ extension Layouter {
     @discardableResult
     public func top(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .top, relatedBy: related, toItem: relative, attribute: .top, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -385,7 +385,7 @@ extension Layouter {
     @discardableResult
     public func bottom(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: related, toItem: relative, attribute: .bottom, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -394,7 +394,7 @@ extension Layouter {
     @discardableResult
     public func leading(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .leading, relatedBy: related, toItem: relative, attribute: .leading, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -403,7 +403,7 @@ extension Layouter {
     @discardableResult
     public func trailing(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: related, toItem: relative, attribute: .trailing, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -412,7 +412,7 @@ extension Layouter {
     @discardableResult
     public func centerX(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: related, toItem: relative, attribute: .centerX, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self
@@ -421,7 +421,7 @@ extension Layouter {
     @discardableResult
     public func centerY(_ constant: CGFloat = 0, multiplier: CGFloat = 1, priority: Float = 1000, related: NSLayoutRelation = .equal) -> Layouter {
         let lay = NSLayoutConstraint(item: view, attribute: .centerY, relatedBy: related, toItem: relative, attribute: .centerY, multiplier: multiplier, constant: constant)
-        lay.priority = priority
+        lay.priority = UILayoutPriority(priority)
         superview.addConstraint(lay)
         _constrants.append(lay)
         return self

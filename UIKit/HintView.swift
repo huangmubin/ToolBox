@@ -42,6 +42,11 @@ extension UIView {
         hint.show(custom: value, image: image, inView: self)
     }
     
+    func hint(success value: String?, inDown: Bool = false, time: Int) {
+        let hint: HintView = inDown ? DownHintView() : HintView()
+        hint.show(custom: value ?? NSLocalizedString("Success", comment: "Success"), images: [HintView.ImageCache.checkmark], duration: 0, inView: self, time: time)
+    }
+    
     func hint(custon value: String, images: [UIImage], duration: TimeInterval, time: Int = 0, inDown: Bool = false) {
         let hint: HintView = inDown ? DownHintView() : HintView()
         hint.show(custom: value, images: images, duration: duration, inView: self, time: time)
@@ -131,7 +136,7 @@ class HintView: UIView {
     
     // MARK: Orientation
     
-    func orientation() {
+    @objc func orientation() {
         DispatchQueue.main.async { [weak self] in
             if let view = self?.superview {
                 UIView.animate(withDuration: 0.25, animations: {
@@ -150,7 +155,8 @@ class HintView: UIView {
         }
         var timeOut = time
         timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 1), queue: DispatchQueue.main)
-        timer?.scheduleRepeating(wallDeadline: DispatchWallTime.now(), interval: DispatchTimeInterval.seconds(1))
+        timer?.schedule(wallDeadline: DispatchWallTime.now(), repeating: DispatchTimeInterval.seconds(1))
+        
         timer?.setEventHandler(handler: { [weak self] in
             if timeOut <= 0 {
                 self?.dismiss()

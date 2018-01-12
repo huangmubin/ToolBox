@@ -33,7 +33,7 @@ public class Network: NSObject {
     
     fileprivate func logMessage(value: String) {
         if isLogOpen {
-            print("Network \(identifier): " + value)
+            //print("Network \(identifier): " + value)
         }
     }
     
@@ -76,6 +76,7 @@ public class Network: NSObject {
         super.init()
         self.identifier = identifier
         self.session = URLSession(configuration: .default, delegate: sessionDelegate, delegateQueue: thread)
+        self.session?.configuration.urlCache?.removeAllCachedResponses()
         self.sessionDelegate.network = self
         self.isLogOpen = isLog
         self.logMessage(value: "Init")
@@ -138,6 +139,9 @@ public class Network: NSObject {
             guard let id = id else {
                 self.current?.cancel()
                 return
+            }
+            if id == self.tasks.current?.id {
+                self.current?.cancel()
             }
             self.tasks.remove(where: { $0.id == id })
         }
@@ -448,12 +452,12 @@ extension Network: SessionDelegate {
                 }
             }
             else {
-                self.logMessage(value: "didCompleteWithError - \(task.id); error = \(String(describing: error));")
+                self.logMessage(value: "didCompleteWithError - \(task.id); error = \(String(describing: error));\n")
                 receive(task, error)
             }
         }
         else {
-            self.logMessage(value: "didCompleteWithError - \(String(describing: task.taskDescription)); error = \(String(describing: error));")
+            self.logMessage(value: "didCompleteWithError - \(String(describing: task.taskDescription)); error = \(String(describing: error));\n")
         }
     }
     
@@ -490,9 +494,25 @@ extension Network {
         public var data: Data?
         /** the task error */
         public var error: Error?
-        
+        /** The Data total size */
         public var size: Int = 0
-        /**  */
+        
+        // MARK: Data Read
+        
+        /** Read the json */
+        private var _json: Json?
+        public var json: Json {
+            if _json == nil {
+                _json = Json(data: data) ?? Json(json: nil)
+                return _json!
+            }
+            else {
+                return _json!
+            }
+            
+        }
+        
+        /** The Data string to utf8 */
         public var note: String? {
             if let data = data {
                 if let text = String(data: data, encoding: String.Encoding.utf8) {
@@ -551,10 +571,10 @@ extension Network {
         public var receiveComplete: ((Network.Task, Error?) -> Void)?
         
         init() {
-            print("Network task \(self) init")
+            //print("Network task \(self) init")
         }
         deinit {
-            print("Network task \(self) deinit\n")
+            //print("Network task \(self) deinit\n")
         }
         
     }

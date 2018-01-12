@@ -36,7 +36,7 @@ extension String {
      - returns: a sub string
      */
     subscript(range: Range<Int>) -> String {
-        return self[self.index(self.startIndex, offsetBy: range.lowerBound) ..< self.index(self.startIndex, offsetBy: range.upperBound)]
+        return String(self[self.index(self.startIndex, offsetBy: range.lowerBound) ..< self.index(self.startIndex, offsetBy: range.upperBound)])
     }
     
     // MARK: - Size

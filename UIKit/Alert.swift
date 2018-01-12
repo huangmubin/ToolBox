@@ -57,22 +57,37 @@ class Alert {
     // MARK: Action
     
     @discardableResult
-    func action(title: String? = NSLocalizedString("Sure", comment: "Sure"), handler: ((UIAlertAction) -> Void)?) -> Alert {
+    func action(title: String? = NSLocalizedString("Sure", comment: "Sure"), color: UIColor? = nil, handler: ((UIAlertAction) -> Void)?) -> Alert {
         let action = UIAlertAction(title: title, style: .default, handler: handler)
+        if let color = color {
+            if action.value(forKey: "titleTextColor") != nil {
+                action.setValue(color, forKey: "titleTextColor")
+            }
+        }
         alert.addAction(action)
         return self
     }
     
     @discardableResult
-    func cancel(title: String? = NSLocalizedString("Cancel", comment: "Cancel"), handler: ((UIAlertAction) -> Void)?) -> Alert {
+    func cancel(title: String? = NSLocalizedString("Cancel", comment: "Cancel"), color: UIColor? = nil, handler: ((UIAlertAction) -> Void)?) -> Alert {
         let action = UIAlertAction(title: title, style: .cancel, handler: handler)
+        if let color = color {
+            if action.value(forKey: "titleTextColor") != nil {
+                action.setValue(color, forKey: "titleTextColor")
+            }
+        }
         alert.addAction(action)
         return self
     }
     
     @discardableResult
-    func destructive(title: String?, handler: ((UIAlertAction) -> Void)?) -> Alert {
+    func destructive(title: String?, color: UIColor? = nil, handler: ((UIAlertAction) -> Void)?) -> Alert {
         let action = UIAlertAction(title: title, style: .destructive, handler: handler)
+        if let color = color {
+            if action.value(forKey: "titleTextColor") != nil {
+                action.setValue(color, forKey: "titleTextColor")
+            }
+        }
         alert.addAction(action)
         return self
     }
