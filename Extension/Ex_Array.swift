@@ -47,6 +47,16 @@ extension Array {
         return indexes
     }
     
+    /** Find the Element */
+    public func find(predicate: (Element) throws -> Bool) -> Element? {
+        do {
+            if let index = try self.index(where: predicate) {
+                return self[index]
+            }
+        } catch { }
+        return nil
+    }
+    
 }
 
 // MARK: - 2D
