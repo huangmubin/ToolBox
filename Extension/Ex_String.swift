@@ -68,4 +68,29 @@ extension String {
         String.string_size_label.font = default_font
         return size
     }
+    
+    /** String big size in rect */
+    func size(largest_font font: UIFont, limit: CGRect) -> UIFont {
+        var size = font.pointSize
+        while self.size(limit.width, font: font.withSize(size)).height > limit.height {
+            size -= 0.1
+        }
+        return font.withSize(size)
+    }
+    
+    /** String big size in line, line default 1, must bigger 1 */
+    func size(largest_font font: UIFont, limit_width width: CGFloat, line: Int = 1) -> UIFont {
+        if line < 1 { return font }
+        var limit = "0"
+        for _ in 1 ..< line {
+            limit += "\n0"
+        }
+        
+        var size = font.pointSize
+        while self.size(width, font: font.withSize(size)) <= limit.size(width, font: font.withSize(size)) {
+            size -= 0.1
+        }
+        return font.withSize(size)
+    }
+    
 }
