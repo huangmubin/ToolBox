@@ -89,7 +89,7 @@ extension String {
         }
         
         var size = font.pointSize
-        while self.size(width, font: font.withSize(size)) <= limit.size(width, font: font.withSize(size)) {
+        while self.size(width, font: font.withSize(size)).height > limit.size(width, font: font.withSize(size)).height {
             size -= 0.1
         }
         return font.withSize(size)
