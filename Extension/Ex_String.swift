@@ -69,8 +69,10 @@ extension String {
         return size
     }
     
+    // MARK: - Font
+    
     /** String big size in rect */
-    func size(largest_font font: UIFont, limit: CGRect) -> UIFont {
+    func font(largest_font font: UIFont, limit: CGRect) -> UIFont {
         var size = font.pointSize
         while self.size(limit.width, font: font.withSize(size)).height > limit.height {
             size -= 0.1
@@ -79,7 +81,7 @@ extension String {
     }
     
     /** String big size in line, line default 1, must bigger 1 */
-    func size(largest_font font: UIFont, limit_width width: CGFloat, line: Int = 1) -> UIFont {
+    func font(largest_font font: UIFont, limit_width width: CGFloat, line: Int = 1) -> UIFont {
         if line < 1 { return font }
         var limit = "0"
         for _ in 1 ..< line {
