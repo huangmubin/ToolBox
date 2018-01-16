@@ -74,14 +74,18 @@ extension String {
     /** String big size in rect */
     func font(largest_font font: UIFont, limit: CGRect) -> UIFont {
         var size = font.pointSize
-        while self.size(limit.width, font: font.withSize(size)).height > limit.height {
-            size -= 0.1
+        let offsets: [CGFloat] = [10, 1, 0.1]
+        for offset in offsets {
+            while self.size(limit.width, font: font.withSize(size)).height > limit.height {
+                size -= offset
+            }
+            size = size + (offset > 0.1 ? offset : 0)
         }
         return font.withSize(size)
     }
     
     /** String big size in line, line default 1, must bigger 1 */
-    func font(largest_font font: UIFont, limit_width width: CGFloat, line: Int = 1) -> UIFont {
+    func font(largest_font font: UIFont, limit rect: CGRect, line: Int) -> UIFont {
         if line < 1 { return font }
         var limit = "0"
         for _ in 1 ..< line {
@@ -89,8 +93,16 @@ extension String {
         }
         
         var size = font.pointSize
-        while self.size(width, font: font.withSize(size)).height > limit.size(width, font: font.withSize(size)).height {
-            size -= 0.1
+        let offsets: [CGFloat] = [10, 1, 0.1]
+        for offset in offsets {
+            var text_size = self.size(rect.width, font: font.withSize(size))
+            var limit_size = limit.size(rect.width, font: font.withSize(size))
+            while text_size.height > rect.height || text_size.height > limit_size.height {
+                size -= offset
+                text_size = self.size(rect.width, font: font.withSize(size))
+                limit_size = limit.size(rect.width, font: font.withSize(size))
+            }
+            size = size + (offset > 0.1 ? offset : 0)
         }
         return font.withSize(size)
     }

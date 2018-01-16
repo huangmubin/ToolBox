@@ -39,11 +39,7 @@ extension Double {
     
     /** Remove the interger number: 1234.555 size 1 = 4.555 */
     public func mod(size: Int) -> Double {
-        var value = self, scape = Double(size)
-        while value > scape {
-            value -= scape
-        }
-        return value
+        return fmod(self, pow(10, Double(size)))
     }
     
 }
