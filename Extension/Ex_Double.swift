@@ -10,6 +10,9 @@ import UIKit
 
 extension Double {
     
+    /** only integer */
+    var is_only_integer: Bool { return self - Double(Int(self)) == 0 }
+    
     /** count a random in 0 ..< 1 */
     public static func random() -> Double {
         let value = arc4random_uniform(UInt32.max)
