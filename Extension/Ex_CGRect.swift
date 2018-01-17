@@ -20,4 +20,9 @@ extension CGRect {
         )
     }
     
+    /** Max point */
+    public func max_point() -> CGPoint {
+        return CGPoint(x: maxX, y: maxY)
+    }
+    
 }

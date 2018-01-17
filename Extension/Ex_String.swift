@@ -38,6 +38,13 @@ extension String {
         return String(self[self.index(self.startIndex, offsetBy: range.lowerBound) ..< self.index(self.startIndex, offsetBy: range.upperBound)])
     }
     
+    /**
+     Range
+     */
+    public subscript(range: NSRange) -> String {
+        return self[range.lowerBound ..< range.upperBound]
+    }
+    
     // MARK: - Size
     
     public static let string_size_label: UILabel = {
