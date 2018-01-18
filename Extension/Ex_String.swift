@@ -128,9 +128,9 @@ extension String {
     /** Get the SubString use the int value offset the String.Index */
     public func substring(start: String.Index? = nil, lenght: Int) -> String {
         if let start_index = start {
-            return self[start_index ..< self.index(start_index, offsetBy: String.IndexDistance(bitPattern: UInt(lenght)))]
+            return String(self[start_index ..< self.index(start_index, offsetBy: String.IndexDistance(bitPattern: UInt(lenght)))])
         } else {
-            return self[startIndex ..< self.index(startIndex, offsetBy: String.IndexDistance(bitPattern: UInt(lenght)))]
+            return String(self[startIndex ..< self.index(startIndex, offsetBy: String.IndexDistance(bitPattern: UInt(lenght)))])
         }
     }
     
