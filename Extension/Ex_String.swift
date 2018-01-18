@@ -38,9 +38,7 @@ extension String {
         return String(self[self.index(self.startIndex, offsetBy: range.lowerBound) ..< self.index(self.startIndex, offsetBy: range.upperBound)])
     }
     
-    /**
-     Range
-     */
+    /** Range */
     public subscript(range: NSRange) -> String {
         return self[range.lowerBound ..< range.upperBound]
     }
@@ -116,8 +114,25 @@ extension String {
     
     // MARK: - Index
     
-    /** Get the index use the int value */
-    public func index(_ value: Int) -> String.Index {
-        return self.index(startIndex, offsetBy: String.IndexDistance(bitPattern: UInt(value)))
+    /** Get the index use the int value offset the String.Index */
+    public func index(start: String.Index? = nil, offset: Int) -> String.Index {
+        if let start_index = start {
+            return self.index(start_index, offsetBy: String.IndexDistance(bitPattern: UInt(offset)))
+        } else {
+            return self.index(startIndex, offsetBy: String.IndexDistance(bitPattern: UInt(offset)))
+        }
     }
+    
+    // MARK: - SubString
+    
+    /** Get the SubString use the int value offset the String.Index */
+    public func substring(start: String.Index? = nil, lenght: Int) -> String {
+        if let start_index = start {
+            return self[start_index ..< self.index(start_index, offsetBy: String.IndexDistance(bitPattern: UInt(lenght)))]
+        } else {
+            return self[startIndex ..< self.index(startIndex, offsetBy: String.IndexDistance(bitPattern: UInt(lenght)))]
+        }
+    }
+    
+    
 }
