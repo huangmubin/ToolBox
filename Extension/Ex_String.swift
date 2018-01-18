@@ -79,7 +79,7 @@ extension String {
     // MARK: - Font
     
     /** String big size in rect */
-    func font(largest_font font: UIFont, limit: CGRect) -> UIFont {
+    public func font(largest_font font: UIFont, limit: CGRect) -> UIFont {
         var size = font.pointSize
         let offsets: [CGFloat] = [10, 1, 0.1]
         for offset in offsets {
@@ -92,7 +92,7 @@ extension String {
     }
     
     /** String big size in line, line default 1, must bigger 1 */
-    func font(largest_font font: UIFont, limit rect: CGRect, line: Int) -> UIFont {
+    public func font(largest_font font: UIFont, limit rect: CGRect, line: Int) -> UIFont {
         if line < 1 { return font }
         var limit = "0"
         for _ in 1 ..< line {
@@ -114,4 +114,10 @@ extension String {
         return font.withSize(size)
     }
     
+    // MARK: - Index
+    
+    /** Get the index use the int value */
+    public func index(_ value: Int) -> String.Index {
+        return self.index(startIndex, offsetBy: String.IndexDistance(bitPattern: UInt(value)))
+    }
 }
