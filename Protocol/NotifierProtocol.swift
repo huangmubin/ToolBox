@@ -21,6 +21,11 @@ extension NotifierProtocol {
         NotificationCenter.default.addObserver(self, selector: selector, name: name, object: object)
     }
     
+    /** Observer a notify at block */
+    func observer(name: Notification.Name, object: Any? = nil, queue: OperationQueue? = nil, using: @escaping (Notification) -> Void) {
+        NotificationCenter.default.addObserver(forName: name, object: object, queue: queue, using: using)
+    }
+    
     /** remove observer a notify. */
     func unobserver(name: NSNotification.Name? = nil, object: Any? = nil) {
         NotificationCenter.default.removeObserver(self, name: name, object: object)
