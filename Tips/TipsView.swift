@@ -30,6 +30,11 @@ public class TipsView: UIView {
     /** 页面消失时间 */
     public var dismiss_time: TimeInterval = 3
     
+    // MARK: - Block
+    
+    /** 消失时的回调 */
+    public var dismiss_call: (() -> Void)?
+    
     // MARK: - Init
     
     init() {
@@ -58,7 +63,6 @@ public class TipsView: UIView {
     /** 更新子视图的位置 */
     public func update_size() {
         if let super_view = superview {
-            self.backgroundColor = UIColor.white
             
             self.frame = super_view.bounds
             let center = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
@@ -119,6 +123,8 @@ public class TipsView: UIView {
         }, completion: {  [weak self] _ in
             self?.timer?.cancel()
             self?.timer = nil
+            self?.dismiss_call?()
+            self?.dismiss_call = nil
             self?.removeFromSuperview()
         })
     }

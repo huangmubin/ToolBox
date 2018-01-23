@@ -126,3 +126,26 @@ class ViewController: UIViewController, NotifierProtocol {
     }
     
 }
+
+extension ViewController {
+    
+    /** 当前屏幕最顶部的控制器 */
+    class func top_view_controller() -> UIViewController? {
+        func top(controller: UIViewController) -> UIViewController? {
+            if let navigation = controller as? UINavigationController {
+                return navigation.topViewController
+            } else if let tabbar = controller as? UITabBarController {
+                return tabbar.selectedViewController
+            } else {
+                return controller
+            }
+        }
+        
+        var top_controller: UIViewController? = UIApplication.shared.keyWindow?.rootViewController
+        while top_controller?.presentedViewController != nil {
+            top_controller = top(controller: top_controller!.presentedViewController!)
+        }
+        return top_controller
+    }
+    
+}

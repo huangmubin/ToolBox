@@ -19,7 +19,7 @@ import UIKit
 class TableViewCell: UITableViewCell {
     
     weak var cell_delegate: TableViewCellDelegate?
-    var index_path: IndexPath?
+    var index_path: IndexPath = IndexPath(row: 0, section: 0)
     
     private var key_values: [String: Any] = [:]
     func set(key: TableViewCell.Key, value: Any?) {

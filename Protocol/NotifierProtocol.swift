@@ -92,3 +92,14 @@ extension Notification {
     }
     
 }
+
+// MARK: - Extension String
+
+extension String {
+    
+    /** Notification.Name.init(self) */
+    var notify: Notification.Name {
+        return Notification.Name.init(self)
+    }
+    
+}

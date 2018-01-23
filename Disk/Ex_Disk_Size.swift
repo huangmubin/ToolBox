@@ -21,7 +21,7 @@ extension Disk {
          folder or file's size to SizeType
          */
         public subscript(path: String, deep: Bool) -> Double {
-            let attribute = DiskManager.typeAndSize(path: path)
+            let attribute = Disk.typeAndSize(path: path)
             if attribute.0 {
                 return Size.directory(path: path, deep: deep) / rawValue
             } else {
@@ -71,7 +71,7 @@ extension Disk {
                 var totaleSize: Double = 0
                 while subFileName != nil {
                     subPath = pathPrefix + subFileName!
-                    let attribute = DiskManager.typeAndSize(path: subPath)
+                    let attribute = Disk.typeAndSize(path: subPath)
                     if attribute.0 {
                         if deep {
                             totaleSize += Size.directory(path: subPath, deep: deep)
