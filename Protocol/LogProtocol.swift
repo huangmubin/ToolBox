@@ -16,7 +16,9 @@ extension LogProtocol {
     
     func log(file: String = #file, function: String = #function, line: Int = #line, _ text: Any?) {
         if open_logs {
-            print("\(file) - \(function) - \(line): \(String(describing: text))")
+            //print("\(file) - \(function) - \(line): \(String(describing: text))")
+            print("\(String(describing: text))")
+            
         }
     }
     
